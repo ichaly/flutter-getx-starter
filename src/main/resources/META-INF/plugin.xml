@@ -1,0 +1,41 @@
+<idea-plugin>
+    <id>cn.te0.flutter-getx-starter</id>
+    <name>Flutter</name>
+    <vendor email="i@eunut.com" url="https://github.com/ichaly">Shi Chaly</vendor>
+
+    <description><![CDATA[
+      Flutter GetX Starter is a flutter quick generate code template base on <a href="https://github.com/jonataslaw/getx">GetX</a> for developer.<br>
+
+      <h2>Gratitude</h2><br>
+      <a href="https://github.com/ichaly/FlutterJsonBeanFactory.git">GetX</a>FlutterJsonBeanFactory<br>
+      <a href="https://github.com/CNAD666/getx_template.git">GetX</a>getx_template<br>
+
+      <h2>How to use</h2>
+      <ul>
+        <li>Right-click the File: New -> GetX</li>
+      </ul>
+    ]]></description>
+
+    <!-- please see https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html
+         on how to target different products -->
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.json</depends>
+    <depends>com.intellij.modules.lang</depends>
+    <depends>com.intellij.modules.all</depends>
+    <depends>Dart</depends>
+    <depends>io.flutter</depends>
+
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+    </extensions>
+
+    <actions>
+        <!-- Add your actions here -->
+        <action id="cn.te0.fgs.init" class="cn.te0.fgs.action.InitAction"
+                text="FlutterBeanFactory"
+                description="Dart files ending in entity generate dart bean factory for use">
+            <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
+        </action>
+    </actions>
+</idea-plugin>

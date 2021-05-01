@@ -1,0 +1,101 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.intellij' version '0.7.3'
+}
+
+group 'cn.te0.flutter-getx-starter'
+version '1.0.0'
+
+def pluginVersionSuffix = ''
+
+repositories {
+    mavenCentral()
+    maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }
+    maven { url 'https://dl.bintray.com/jetbrains/intellij-plugin-service' }
+}
+
+dependencies {
+    implementation 'org.yaml:snakeyaml:1.28'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+}
+
+// See https://github.com/JetBrains/gradle-intellij-plugin/
+intellij {
+    version '2021.1'
+    updateSinceUntilBuild false
+
+    def requiredPlugins = ['yaml']
+    if (ideaVersionPrefix != '' && ideaVersionPrefix.toInteger() >= 192) {
+        requiredPlugins.add('java')
+    }
+    plugins = requiredPlugins
+}
+
+patchPluginXml {
+    version (pluginVersion + pluginVersionSuffix)
+    changeNotes """
+      version 1.0.0 has been released.<br>
+    """
+}
+
+
+def productMatrixFile = "${projectDir.absolutePath}/product-matrix.json"
+def jsonFile = new File(productMatrixFile)
+if (jsonFile == null) {
+    // noinspection GroovyAssignabilityCheck
+    throw new GradleException("Unable to read $productMatrixFile, is it missing?")
+}
+
+// Fail if the product details file isn't found.
+// noinspection UnnecessaryQualifiedReference
+def productMatrix = new groovy.json.JsonSlurper().parseText(jsonFile.text)
+if (productMatrix == null || !(productMatrix instanceof Map)) {
+    // noinspection GroovyAssignabilityCheck
+    throw new GradleException("Unable to read $productMatrixFile.")
+}
+
+// If an ideaVersionPrefix is provided, search for the first matched product and use that.
+if (ideaVersionPrefix != '') {
+    def productMatrixKeys = productMatrix.keySet() as String[]
+    for (productMatrixKey in productMatrixKeys) {
+        if (productMatrixKey != null && productMatrixKey.startsWith("${ideaVersionPrefix}.")) {
+            ideaVersion = productMatrixKey
+            break
+        }
+    }
+}
+
+// Fail if requested version is unsupported.
+if (!productMatrix.containsKey(ideaVersion)) {
+    // noinspection GroovyAssignabilityCheck
+    throw new GradleException("Requested IDEA version is unsupported: $ideaVersion")
+}
+
+// Determine which branch we're building for.
+def productDetails = productMatrix[ideaVersion]
+if (productDetails == null || !(productDetails instanceof Map)) {
+    // noinspection GroovyAssignabilityCheck
+    throw new GradleException("Product details for IDEA version $ideaVersion is missing or invalid.")
+}
+
+// Adjust plugin's output file name.
+rootProject.setBuildDir("${rootProject.buildDir}/${productDetails.comments}")
+
+System.out.println(
+        "\nBuilding plugin ${(pluginVersion + pluginVersionSuffix)} for IDEA " +
+                "version $ideaVersion (branch ${productDetails.comments})\n"
+)
+System.out.println("Since: ${productDetails.sinceBuild}")
+System.out.println("Until: ${productDetails.untilBuild}")
+System.out.println("Dart: ${productDetails.dartPluginVersion}")
+System.out.println("Flutter: ${productDetails.flutterPluginVersion}\n")
+System.out.println("Artifacts output directory: ${rootProject.buildDir}\n")
+
+// Adjust plugin build settings.
+intellij.version = ideaVersion
+intellij.plugins += "Dart:${productDetails.dartPluginVersion}"
+intellij.plugins += "io.flutter:${productDetails.flutterPluginVersion}"
+patchPluginXml.sinceBuild = productDetails.sinceBuild
+patchPluginXml.untilBuild = productDetails.untilBuild
