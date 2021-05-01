@@ -32,10 +32,14 @@
 
     <actions>
         <!-- Add your actions here -->
-        <action id="cn.te0.fgs.init" class="cn.te0.fgs.action.InitAction"
-                text="FlutterBeanFactory"
-                description="Dart files ending in entity generate dart bean factory for use">
+        <action id="cn.te0.fgs.New" class="cn.te0.fgs.action.NewFileGroupAction">
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
+        <!--<action id="cn.te0.fgs.init" class="cn.te0.fgs.action.InitAction"-->
+        <!--        text="Flutter GetX Starter"-->
+        <!--        icon="/icons/logo.svg"-->
+        <!--        description="Generate code templates quickly for Flutter&amp;GetX">-->
+        <!--    <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>-->
+        <!--</action>-->
     </actions>
 </idea-plugin>
