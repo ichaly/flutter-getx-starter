@@ -1,7 +1,21 @@
+buildscript {
+    ext.kotlin_version = '1.4.31'
+
+    repositories {
+        maven { url 'http://dl.bintray.com/jetbrains/intellij-plugin-service' }
+        mavenLocal()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
 plugins {
     id 'java'
     id 'org.jetbrains.intellij' version '0.7.3'
-    id 'org.jetbrains.kotlin.jvm' version '1.4.31'
+    id 'org.jetbrains.kotlin.jvm' version "$kotlin_version"
 }
 
 group 'cn.te0.flutter-getx-starter'
@@ -9,13 +23,21 @@ version '1.0.0'
 
 def pluginVersionSuffix = ''
 
+// must!!!
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
 repositories {
     mavenCentral()
     maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }
-    maven { url 'https://dl.bintray.com/jetbrains/intellij-plugin-service' }
 }
 
 dependencies {
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     implementation 'org.yaml:snakeyaml:1.28'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
@@ -35,7 +57,7 @@ intellij {
 }
 
 patchPluginXml {
-    version (pluginVersion + pluginVersionSuffix)
+    version(pluginVersion + pluginVersionSuffix)
     changeNotes """
       version 1.0.0 has been released.<br>
     """
@@ -98,5 +120,6 @@ System.out.println("Artifacts output directory: ${rootProject.buildDir}\n")
 intellij.version = ideaVersion
 intellij.plugins += "Dart:${productDetails.dartPluginVersion}"
 intellij.plugins += "io.flutter:${productDetails.flutterPluginVersion}"
+intellij.plugins += "Kotlin"
 patchPluginXml.sinceBuild = productDetails.sinceBuild
 patchPluginXml.untilBuild = productDetails.untilBuild
