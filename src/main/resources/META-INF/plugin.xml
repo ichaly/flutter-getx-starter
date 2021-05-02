@@ -29,6 +29,9 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
+        <applicationService serviceImplementation="helper.DataService"/>
+        <applicationConfigurable parentId="tools" instance="setting.SettingsConfigurable"
+                                 id="SettingsConfigurable" displayName="GetX Setting"/>
     </extensions>
 
     <actions>
