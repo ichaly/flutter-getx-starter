@@ -5,8 +5,8 @@ Hi,Welcome to come to see me!
 What I do is generate dart beans based on json, as well as generics parameters and json build instances
 
 
-### Easy Use
-![image](https://github.com/zhangruiyu/FlutterJsonBeanFactory/blob/master/beantojson_factory.gif)
+[comment]: <> (### Easy Use)
+[comment]: <> (![image]&#40;https://github.com/zhangruiyu/FlutterJsonBeanFactory/blob/master/beantojson_factory.gif&#41;)
 
 
 ### Usage
@@ -22,11 +22,11 @@ What I do is generate dart beans based on json, as well as generics parameters a
 * Welcome anyone to raise new issue.
 * Welcome anyone to push a pull request to improve me.
 
-### Thanks
-* Thank [@jonataslaw/](https://github.com/jonataslaw/getx) 
-* Thank [@CNAD666/](https://github.com/CNAD666/getx_template) 
-* Thank [@AndrewShen812/](https://github.com/AndrewShen812/AssetsRefGenerator) 
-* Thank [@zhangruiyu/](https://github.com/zhangruiyu/FlutterJsonBeanFactory) 
+### Gratitude
+* Thank [@jonataslaw](https://github.com/jonataslaw/getx) 
+* Thank [@CNAD666](https://github.com/CNAD666/getx_template) 
+* Thank [@zhangruiyu](https://github.com/zhangruiyu/FlutterJsonBeanFactory) 
+* Thank [@AndrewShen812](https://github.com/AndrewShen812/AssetsRefGenerator) 
 
 ### Find me useful ? :heart:
 * Support me by clicking the :star: button on the upper right of this page. :v:
