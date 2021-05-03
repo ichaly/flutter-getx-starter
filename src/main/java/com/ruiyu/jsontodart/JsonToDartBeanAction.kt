@@ -23,7 +23,7 @@ class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
 
     init {
         templatePresentation.apply {
-            text = "Dart Bean From JSON"
+            text = "Dart Bean From JSON..."
             description = "Generate dart bean class File from JSON"
         }
     }
