@@ -1,6 +1,6 @@
 package cn.te0.fgs.action
 
-import cn.te0.fgs.helper.ModuleHelper
+import cn.te0.fgs.helper.ViewHelper
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
@@ -11,7 +11,7 @@ import com.ruiyu.helper.YamlHelper
 import com.ruiyu.utils.showNotify
 import io.flutter.pub.PubRoot
 
-class InitAction : AnAction("JsonToDartBeanAction") {
+class InitAction : AnAction() {
 
     init {
         templatePresentation.apply {
@@ -31,6 +31,7 @@ class InitAction : AnAction("JsonToDartBeanAction") {
         }
     }
 
+    //初始化项目框架结构
     fun generateStructure(project: Project) {
         ApplicationManager.getApplication().runWriteAction {
             PubRoot.forFile(FileHelpers.getProjectIdeaFile(project))?.run {
@@ -53,9 +54,9 @@ class InitAction : AnAction("JsonToDartBeanAction") {
                         findChild("util") ?: createChildDirectory(this, "util")
                         findChild("entity") ?: createChildDirectory(this, "entity")
                         findChild("routes") ?: createChildDirectory(this, "routes")
-                        findChild("modules") ?: createChildDirectory(this, "modules").run {
+                        findChild("views") ?: createChildDirectory(this, "views").run {
                             //创建一个home的默认模块
-                            ModuleHelper.getInstance().createModule(project, "Home", path, true);
+                            ViewHelper.getInstance().createView(project, "Home", path);
                         }
                     }
                     //初始化main.dart

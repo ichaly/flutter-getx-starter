@@ -17,9 +17,15 @@ import java.io.File
 
 class FlutterBeanFactoryAction : AnAction() {
 
+    init {
+        templatePresentation.apply {
+            text = "FlutterBeanFactoryAction"
+            description = "FlutterBeanFactoryAction"
+        }
+    }
+
     override fun actionPerformed(e: AnActionEvent) {
         generateAllFile(e.getData(PlatformDataKeys.PROJECT)!!)
-
     }
 
     companion object {
@@ -61,7 +67,7 @@ class FlutterBeanFactoryAction : AnAction() {
                                 }"
                             )
                             content.append("\n")
-                            content.append("import 'package:${pubSpecConfig?.name}/generated/json/${helpPackageName}';")
+                            content.append("import 'package:${pubSpecConfig?.name}/gen/json/${helpPackageName}';")
                             content.append("\n")
                             oldHelperChildren.removeIf { oldItemFile ->
                                 //删除包含的,剩下的就是多余的,比如之前生成过,现在被删除
@@ -193,20 +199,14 @@ class FlutterBeanFactoryAction : AnAction() {
                         FileHelpers.getJsonConvertContentFile(project) { itemVirtualFile ->
                             itemVirtualFile.commitContent(project, content.toString())
                         }
-
-
                         project.showNotify("convert factory is generated")
                     }
                 } catch (e: RuntimeException) {
                     e.message?.let { project.showNotify(it) }
                 }
-
-
             } else {
                 project.showNotify("This project is not the flutter project or the flutterJson in pubspec.yaml with the enable set to false")
             }
-
-
         }
     }
 }

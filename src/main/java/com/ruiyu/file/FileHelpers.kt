@@ -80,8 +80,8 @@ object FileHelpers {
      */
     private fun getGeneratedFile(project: Project): VirtualFile {
         return PubRoot.forFile(getProjectIdeaFile(project))?.lib?.let { lib ->
-            return@let (lib.findChild("generated")
-                    ?: lib.createChildDirectory(this, "generated")).run {
+            return@let (lib.findChild("gen")
+                    ?: lib.createChildDirectory(this, "gen")).run {
                 return@run (findChild("json")
                         ?: createChildDirectory(this, "json"))
             }

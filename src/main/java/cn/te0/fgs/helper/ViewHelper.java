@@ -15,19 +15,19 @@ import java.io.Serializable;
 /**
  * @author chaly
  */
-public class ModuleHelper implements Serializable {
+public class ViewHelper implements Serializable {
     private static final long serialVersionUID = 1L;
     private DataService data;
 
-    private ModuleHelper() {
+    private ViewHelper() {
         data = DataService.getInstance();
     }
 
     private static class InnerClass {
-        private static final ModuleHelper SINGLETON = new ModuleHelper();
+        private static final ViewHelper SINGLETON = new ViewHelper();
     }
 
-    public static ModuleHelper getInstance() {
+    public static ViewHelper getInstance() {
         return InnerClass.SINGLETON;
     }
 
@@ -35,7 +35,7 @@ public class ModuleHelper implements Serializable {
         return InnerClass.SINGLETON;
     }
 
-    public void createModule(Project project, String name, String folder, boolean defaultMode) {
+    public void createView(Project project, String name, String folder) {
         String prefix = "";
         String tmp = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name);
         if (data.useFolder) {
@@ -44,7 +44,7 @@ public class ModuleHelper implements Serializable {
         if (data.usePrefix) {
             prefix = tmp + "_";
         }
-        if (defaultMode) {
+        if (data.defaultMode) {
             generateDefault(name, folder, prefix);
         } else {
             generateEasy(name, folder, prefix);

@@ -32,6 +32,12 @@
         <applicationService serviceImplementation="helper.DataService"/>
         <applicationConfigurable parentId="tools" instance="setting.SettingsConfigurable"
                                  id="SettingsConfigurable" displayName="GetX Setting"/>
+
+        <postStartupActivity implementation="com.ruiyu.workers.Initializer"/>
+        <applicationService serviceImplementation="com.ruiyu.setting.Settings"/>
+        <projectConfigurable groupId="tools" displayName="FlutterJsonBeanFactory"
+                             id="preferences.SingleFileExecutionConfigurable"
+                             instance="com.ruiyu.setting.SettingComponent"/>
     </extensions>
 
     <actions>
@@ -39,11 +45,5 @@
         <action id="cn.te0.fgs.New" class="cn.te0.fgs.action.NewFileGroupAction">
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
-        <!--<action id="cn.te0.fgs.init" class="cn.te0.fgs.action.InitAction"-->
-        <!--        text="Flutter GetX Starter"-->
-        <!--        icon="/icons/logo.svg"-->
-        <!--        description="Generate code templates quickly for Flutter&amp;GetX">-->
-        <!--    <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>-->
-        <!--</action>-->
     </actions>
 </idea-plugin>

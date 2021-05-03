@@ -105,11 +105,11 @@ class ModelGenerator(
         })
         val stringBuilder = StringBuilder()
         //导包
-        stringBuilder.append("import 'package:${pubSpecConfig?.name}/generated/json/base/json_convert_content.dart';")
+        stringBuilder.append("import 'package:${pubSpecConfig?.name}/gen/json/base/json_convert_content.dart';")
         stringBuilder.append("\n")
         //说明需要导包json_field.dart
         if (classContent.contains("@JSONField(")) {
-            stringBuilder.append("import 'package:${pubSpecConfig?.name}/generated/json/base/json_field.dart';")
+            stringBuilder.append("import 'package:${pubSpecConfig?.name}/gen/json/base/json_field.dart';")
             stringBuilder.append("\n")
         }
         stringBuilder.append("\n")

@@ -21,6 +21,13 @@ import com.ruiyu.utils.showNotify
 
 class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
 
+    init {
+        templatePresentation.apply {
+            text = "Dart Bean From JSON"
+            description = "Generate dart bean class File from JSON"
+        }
+    }
+
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.getData(PlatformDataKeys.PROJECT) ?: return
 
@@ -34,10 +41,10 @@ class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
             else -> {
                 val root = ModuleRootManager.getInstance(module)
                 root.sourceRoots
-                        .asSequence()
-                        .mapNotNull {
-                            PsiManager.getInstance(project).findDirectory(it)
-                        }.firstOrNull()
+                    .asSequence()
+                    .mapNotNull {
+                        PsiManager.getInstance(project).findDirectory(it)
+                    }.firstOrNull()
             }
         } ?: return
 //        val directoryFactory = PsiDirectoryFactory.getInstance(directory.project)
@@ -62,11 +69,11 @@ class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
                     }
                     else -> {
                         generateDartDataClassFile(
-                                fileName,
-                                generatorClassContent,
-                                project,
-                                psiFileFactory,
-                                directory
+                            fileName,
+                            generatorClassContent,
+                            project,
+                            psiFileFactory,
+                            directory,
                         )
                         val notifyMessage = "Dart Data Class file generated successful"
                         FlutterBeanFactoryAction.generateAllFile(project)
@@ -79,21 +86,20 @@ class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
         } catch (e: Exception) {
             project.showNotify(e.message!!)
         }
-
     }
 
-
     private fun generateDartDataClassFile(
-            fileName: String,
-            classCodeContent: String,
-            project: Project?,
-            psiFileFactory: PsiFileFactory,
-            directory: PsiDirectory
+        fileName: String,
+        classCodeContent: String,
+        project: Project?,
+        psiFileFactory: PsiFileFactory,
+        directory: PsiDirectory
     ) {
 
         project.executeCouldRollBackAction {
 
-            val file = psiFileFactory.createFileFromText("$fileName.dart", DartFileType.INSTANCE, classCodeContent) as DartFile
+            val file =
+                psiFileFactory.createFileFromText("$fileName.dart", DartFileType.INSTANCE, classCodeContent) as DartFile
             directory.add(file)
             //包名
 //            val packageName = (directory.virtualFile.path + "/$fileName.dart").substringAfter("${project!!.name}/lib/")
