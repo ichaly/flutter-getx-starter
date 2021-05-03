@@ -1,11 +1,14 @@
-package setting;
+package cn.te0.fgs.setting;
 
+import cn.te0.fgs.helper.DataService;
 import com.intellij.openapi.options.Configurable;
-import helper.DataService;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
+/**
+ * @author chaly
+ */
 public class SettingsConfigurable implements Configurable {
 
     private final DataService data = DataService.getInstance();
@@ -27,8 +30,8 @@ public class SettingsConfigurable implements Configurable {
     public boolean isModified() {
         boolean modified;
         modified = !mSetting.logicName.getText().equals(data.logicName)
-                || !mSetting.stateName.getText().equals(data.stateName)
-                || !mSetting.viewName.getText().equals(data.viewName);
+            || !mSetting.stateName.getText().equals(data.stateName)
+            || !mSetting.viewName.getText().equals(data.viewName);
         return modified;
     }
 

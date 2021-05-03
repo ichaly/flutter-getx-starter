@@ -1,4 +1,4 @@
-package helper;
+package cn.te0.fgs.helper;
 
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;

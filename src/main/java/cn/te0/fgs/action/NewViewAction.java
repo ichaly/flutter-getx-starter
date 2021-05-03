@@ -7,7 +7,7 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.ui.JBColor;
-import helper.DataService;
+import cn.te0.fgs.helper.DataService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -113,7 +113,7 @@ public class NewViewAction extends AnAction {
         template.setLayout(new GridLayout(1, 2));
         //Set the main module style：mode, function
         template.setBorder(BorderFactory.createTitledBorder("Select Mode"));
-        //default: high setting
+        //default: high cn.te0.fgs.setting
         JRadioButton defaultBtn = new JRadioButton("Default", data.defaultMode);
         defaultBtn.setActionCommand("Default");
         setPadding(defaultBtn, 5, 10);

@@ -1,4 +1,4 @@
-package helper;
+package cn.te0.fgs.helper;
 
 // set default value
 public class GetXConfig {

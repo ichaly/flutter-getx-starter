@@ -18,18 +18,27 @@
       <br>
     ]]></description>
 
+    <change-notes><![CDATA[
+      <b>1.0.0</b>
+      <ul>
+        <li>
+          Support Flutter Module, Package and Plugin project.
+        </li>
+      </ul>
+      <br/>
+    ]]></change-notes>
+
     <!-- please see https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html
          on how to target different products -->
     <depends>com.intellij.modules.all</depends>
-    <depends>org.jetbrains.kotlin</depends>
     <depends>Dart</depends>
     <depends>io.flutter</depends>
-
+    <depends>org.jetbrains.kotlin</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
-        <applicationService serviceImplementation="helper.DataService"/>
-        <applicationConfigurable parentId="tools" instance="setting.SettingsConfigurable"
+        <applicationService serviceImplementation="cn.te0.fgs.helper.DataService"/>
+        <applicationConfigurable parentId="tools" instance="cn.te0.fgs.setting.SettingsConfigurable"
                                  id="SettingsConfigurable" displayName="GetX Setting"/>
 
         <postStartupActivity implementation="com.ruiyu.workers.Initializer"/>
@@ -43,6 +52,13 @@
         <!-- Add your actions here -->
         <action id="cn.te0.fgs.New" class="cn.te0.fgs.action.NewFileGroupAction">
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
+        </action>
+        <action id="FlutterAssetsRefGenerator"
+                class="com.shenyong.flutter.AssetsRefGenerator"
+                text="Generate Flutter Assets Reference"
+                description="Flutter assets ref generator"
+                icon="/icons/asset.svg">
+            <add-to-group group-id="ToolbarRunGroup" anchor="last"/>
         </action>
     </actions>
 </idea-plugin>
