@@ -1,4 +1,4 @@
-package cn.te0.fgs.helper;
+package cn.te0.flutter.helper;
 
 import com.google.common.base.CaseFormat;
 import com.intellij.openapi.project.Project;

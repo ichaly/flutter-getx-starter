@@ -1,10 +1,9 @@
-package cn.te0.fgs.action;
+package cn.te0.flutter.action;
 
-import cn.te0.fgs.utils.Icons;
+import cn.te0.flutter.utils.Icons;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.project.DumbAware;
-import com.ruiyu.beanfactory.FlutterBeanFactoryAction;
 import com.ruiyu.jsontodart.JsonToDartBeanAction;
 
 /**

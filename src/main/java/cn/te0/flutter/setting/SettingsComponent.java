@@ -1,4 +1,4 @@
-package cn.te0.fgs.setting;
+package cn.te0.flutter.setting;
 
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBTextField;

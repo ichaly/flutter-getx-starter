@@ -1,6 +1,6 @@
-package cn.te0.fgs.setting;
+package cn.te0.flutter.setting;
 
-import cn.te0.fgs.helper.DataService;
+import cn.te0.flutter.helper.DataService;
 import com.intellij.openapi.options.Configurable;
 import org.jetbrains.annotations.Nullable;
 

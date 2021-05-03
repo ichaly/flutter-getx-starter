@@ -1,6 +1,6 @@
-package cn.te0.fgs.action
+package cn.te0.flutter.action
 
-import cn.te0.fgs.helper.ViewHelper
+import cn.te0.flutter.helper.ViewHelper
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
@@ -38,6 +38,7 @@ class InitAction : AnAction() {
                 //初始化资源文件目录
                 root.findChild("assets") ?: root.createChildDirectory(this, "assets").run {
                     findChild("image") ?: createChildDirectory(this, "image")//图片资源
+                    findChild("font") ?: createChildDirectory(this, "font")//字体资源
                     findChild("json") ?: createChildDirectory(this, "json")//Json资源
                     findChild("anim") ?: createChildDirectory(this, "anim")//动画资源
                     findChild("i18n") ?: createChildDirectory(this, "i18n")//国际化资源
@@ -51,7 +52,7 @@ class InitAction : AnAction() {
                     //初始化app目录
                     findChild("app") ?: createChildDirectory(this, "app")?.run {
                         findChild("base") ?: createChildDirectory(this, "base")
-                        findChild("util") ?: createChildDirectory(this, "util")
+                        findChild("utils") ?: createChildDirectory(this, "utils")
                         findChild("entity") ?: createChildDirectory(this, "entity")
                         findChild("routes") ?: createChildDirectory(this, "routes")
                         findChild("views") ?: createChildDirectory(this, "views").run {

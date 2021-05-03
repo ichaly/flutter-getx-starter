@@ -1,13 +1,13 @@
-package cn.te0.fgs.action;
+package cn.te0.flutter.action;
 
-import cn.te0.fgs.helper.ViewHelper;
+import cn.te0.flutter.helper.ViewHelper;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.ui.JBColor;
-import cn.te0.fgs.helper.DataService;
+import cn.te0.flutter.helper.DataService;
 
 import javax.swing.*;
 import java.awt.*;

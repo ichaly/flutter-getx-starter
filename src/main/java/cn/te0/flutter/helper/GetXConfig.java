@@ -1,4 +1,4 @@
-package cn.te0.fgs.helper;
+package cn.te0.flutter.helper;
 
 // set default value
 public class GetXConfig {

@@ -37,8 +37,8 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
-        <applicationService serviceImplementation="cn.te0.fgs.helper.DataService"/>
-        <applicationConfigurable parentId="tools" instance="cn.te0.fgs.setting.SettingsConfigurable"
+        <applicationService serviceImplementation="cn.te0.flutter.helper.DataService"/>
+        <applicationConfigurable parentId="tools" instance="cn.te0.flutter.setting.SettingsConfigurable"
                                  id="SettingsConfigurable" displayName="GetX Setting"/>
 
         <postStartupActivity implementation="com.ruiyu.workers.Initializer"/>
@@ -50,11 +50,11 @@
 
     <actions>
         <!-- Add your actions here -->
-        <action id="cn.te0.fgs.New" class="cn.te0.fgs.action.NewFileGroupAction">
+        <action id="cn.te0.flutter.New" class="cn.te0.flutter.action.NewFileGroupAction">
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
         <action id="FlutterAssetsRefGenerator"
-                class="com.shenyong.flutter.AssetsRefGenerator"
+                class="cn.te0.flutter.action.AssetsGeneratorAction"
                 text="Generate Flutter Assets Reference"
                 description="Flutter assets ref generator"
                 icon="/icons/asset.svg">
