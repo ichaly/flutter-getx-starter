@@ -19,7 +19,6 @@ plugins {
 }
 
 group 'cn.te0.flutter-getx-starter'
-version '1.0.0'
 
 def pluginVersionSuffix = ''
 
