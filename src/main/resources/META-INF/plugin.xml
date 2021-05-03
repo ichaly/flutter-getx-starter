@@ -7,7 +7,6 @@
       Flutter GetX Starter is a flutter quick generate code template base on <a href="https://github.com/jonataslaw/getx">GetX</a> for developer.<br>
 
       <h2>Gratitude</h2>
-      <a href="https://github.com/jonataslaw/getx">GetX</a><br>
       <a href="https://github.com/CNAD666/getx_template">getx_template</a><br>
       <a href="https://github.com/AndrewShen812/AssetsRefGenerator">AssetsRefGenerator</a><br>
       <a href="https://github.com/zhangruiyu/FlutterJsonBeanFactory">FlutterJsonBeanFactory</a><br>
@@ -16,13 +15,11 @@
       <ul>
         <li>Right-click the File: New -> Flutter GetX Starter</li>
       </ul>
+      <br>
     ]]></description>
 
     <!-- please see https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html
          on how to target different products -->
-    <depends>com.intellij.modules.platform</depends>
-    <depends>com.intellij.modules.json</depends>
-    <depends>com.intellij.modules.lang</depends>
     <depends>com.intellij.modules.all</depends>
     <depends>org.jetbrains.kotlin</depends>
     <depends>Dart</depends>
