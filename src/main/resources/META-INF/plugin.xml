@@ -1,18 +1,20 @@
 <idea-plugin>
     <id>cn.te0.flutter-getx-starter</id>
-    <name>Flutter</name>
+    <name>Flutter GetX Starter</name>
     <vendor email="i@eunut.com" url="https://github.com/ichaly">Shi Chaly</vendor>
 
     <description><![CDATA[
       Flutter GetX Starter is a flutter quick generate code template base on <a href="https://github.com/jonataslaw/getx">GetX</a> for developer.<br>
 
       <h2>Gratitude</h2><br>
-      <a href="https://github.com/ichaly/FlutterJsonBeanFactory.git">GetX</a>FlutterJsonBeanFactory<br>
-      <a href="https://github.com/CNAD666/getx_template.git">GetX</a>getx_template<br>
+      <a href="https://github.com/jonataslaw/getx">GetX</a><br>
+      <a href="https://github.com/CNAD666/getx_template">getx_template</a><br>
+      <a href="https://github.com/AndrewShen812/AssetsRefGenerator">AssetsRefGenerator</a><br>
+      <a href="https://github.com/zhangruiyu/FlutterJsonBeanFactory">FlutterJsonBeanFactory</a><br>
 
       <h2>How to use</h2>
       <ul>
-        <li>Right-click the File: New -> GetX</li>
+        <li>Right-click the File: New -> Flutter GetX Starter</li>
       </ul>
     ]]></description>
 
