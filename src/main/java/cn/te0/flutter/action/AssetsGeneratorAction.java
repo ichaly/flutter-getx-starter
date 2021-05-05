@@ -1,5 +1,6 @@
 package cn.te0.flutter.action;
 
+import cn.te0.flutter.helper.TemplateHelper;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ArrayListMultimap;
@@ -30,22 +31,24 @@ import java.util.stream.Collectors;
  */
 public class AssetsGeneratorAction extends AnAction {
     private static final String ASSETS_ROOT = "assets";
-    private static final Splitter splitter = Splitter.on(File.separator).omitEmptyStrings().trimResults();
+    private static final Splitter SPLITTER = Splitter.on(File.separator).omitEmptyStrings().trimResults();
 
+    Project project;
     String base, last, name;
     Set<String> variant = new HashSet<>();
     Multimap<String, String> assets = ArrayListMultimap.create();
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
-        Project project = e.getData(PlatformDataKeys.PROJECT);
+        project = e.getData(PlatformDataKeys.PROJECT);
         base = Objects.requireNonNull(project).getBasePath() + File.separator + ASSETS_ROOT;
-        if (PubRoot.forFile(FileHelpers.getProjectIdeaFile(project)).isFlutterPlugin()) {
-            name = YamlHelper.getPubSpecConfig(project).getName();
+        if (Objects.requireNonNull(PubRoot.forFile(FileHelpers.getProjectIdeaFile(project))).isFlutterPlugin()) {
+            name = Objects.requireNonNull(YamlHelper.getPubSpecConfig(project)).getName();
         }
         getAssets(new File(base));
         updateYaml();
         updateDart();
+        project.getBaseDir().refresh(false, true);
     }
 
     public void getAssets(File file) {
@@ -88,7 +91,7 @@ public class AssetsGeneratorAction extends AnAction {
         for (String file : files) {
             Collection<String> paths = assets.get(file);
             for (String path : paths) {
-                List<String> list = Lists.newArrayList(splitter.splitToList(path));
+                List<String> list = Lists.newArrayList(SPLITTER.splitToList(path));
                 //如果是变体目录
                 if (variant.contains(path)) {
                     list.remove(list.size() - 1);
@@ -102,6 +105,12 @@ public class AssetsGeneratorAction extends AnAction {
                 }
             }
         }
-        System.err.println(tables);
+        File file = new File(Objects.requireNonNull(project).getBasePath() + "/lib/gen/res/");
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        TemplateHelper.getInstance().generator(
+            "resources.dart.ftl", file.getAbsolutePath() + "/resources.dart", tables.rowMap(), name
+        );
     }
 }

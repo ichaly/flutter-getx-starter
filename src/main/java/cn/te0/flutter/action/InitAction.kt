@@ -57,12 +57,13 @@ class InitAction : AnAction() {
                         findChild("routes") ?: createChildDirectory(this, "routes")
                         findChild("views") ?: createChildDirectory(this, "views").run {
                             //创建一个home的默认模块
-                            ViewHelper.getInstance().createView(project, "Home", path);
+                            ViewHelper.getInstance().createView("Home", path);
                         }
                     }
                     //初始化main.dart
                 }
             }
+            project.baseDir.refresh(false, true)
         }
     }
 }

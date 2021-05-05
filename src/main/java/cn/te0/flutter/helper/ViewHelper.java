@@ -9,32 +9,26 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 
 /**
  * @author chaly
  */
-public class ViewHelper implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class ViewHelper {
     private DataService data;
+
+    private static class SingletonHolder {
+        private static ViewHelper instance = new ViewHelper();
+    }
 
     private ViewHelper() {
         data = DataService.getInstance();
     }
 
-    private static class InnerClass {
-        private static final ViewHelper SINGLETON = new ViewHelper();
-    }
-
     public static ViewHelper getInstance() {
-        return InnerClass.SINGLETON;
+        return SingletonHolder.instance;
     }
 
-    protected Object readResolve() {
-        return InnerClass.SINGLETON;
-    }
-
-    public void createView(Project project, String name, String folder) {
+    public void createView( String name, String folder) {
         String prefix = "";
         String tmp = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name);
         if (data.useFolder) {
@@ -48,7 +42,6 @@ public class ViewHelper implements Serializable {
         } else {
             generateEasy(name, folder, prefix);
         }
-        project.getBaseDir().refresh(false, true);
     }
 
     private void generateDefault(String name, String folder, String prefixName) {
