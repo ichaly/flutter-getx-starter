@@ -3,7 +3,6 @@ package cn.te0.flutter.action;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
@@ -12,6 +11,9 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
+import com.ruiyu.file.FileHelpers;
+import com.ruiyu.helper.YamlHelper;
+import io.flutter.pub.PubRoot;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -30,7 +32,7 @@ public class AssetsGeneratorAction extends AnAction {
     private static final String ASSETS_ROOT = "assets";
     private static final Splitter splitter = Splitter.on(File.separator).omitEmptyStrings().trimResults();
 
-    String base, last;
+    String base, last, name;
     Set<String> variant = new HashSet<>();
     Multimap<String, String> assets = ArrayListMultimap.create();
 
@@ -38,8 +40,10 @@ public class AssetsGeneratorAction extends AnAction {
     public void actionPerformed(@NotNull AnActionEvent e) {
         Project project = e.getData(PlatformDataKeys.PROJECT);
         base = Objects.requireNonNull(project).getBasePath() + File.separator + ASSETS_ROOT;
-        File file = new File(base);
-        getAssets(file);
+        if (PubRoot.forFile(FileHelpers.getProjectIdeaFile(project)).isFlutterPlugin()) {
+            name = YamlHelper.getPubSpecConfig(project).getName();
+        }
+        getAssets(new File(base));
         updateYaml();
         updateDart();
     }
@@ -80,9 +84,9 @@ public class AssetsGeneratorAction extends AnAction {
 
     public void updateDart() {
         Table<String, String, String> tables = TreeBasedTable.create();
-        Set<String> names = assets.keySet();
-        for (String name : names) {
-            Collection<String> paths = assets.get(name);
+        Set<String> files = assets.keySet();
+        for (String file : files) {
+            Collection<String> paths = assets.get(file);
             for (String path : paths) {
                 List<String> list = Lists.newArrayList(splitter.splitToList(path));
                 //如果是变体目录
@@ -90,7 +94,7 @@ public class AssetsGeneratorAction extends AnAction {
                     list.remove(list.size() - 1);
                 }
                 String row = list.remove(0);
-                list.add(name);
+                list.add(file);
                 String value = Joiner.on("/").skipNulls().join("assets", null, list.toArray());
                 String column = Joiner.on("_").join(list).split("\\.")[0];
                 if (tables.get(row, column) == null) {

@@ -91,6 +91,7 @@ object FileHelpers {
     /**
      * 获取项目.idea目录的一个文件
      */
+    @JvmStatic
     fun getProjectIdeaFile(project: Project): VirtualFile? {
         val ideaFile = project.projectFile ?: project.workspaceFile ?: project.guessProjectDir()?.children?.first()
         if (ideaFile == null) {
