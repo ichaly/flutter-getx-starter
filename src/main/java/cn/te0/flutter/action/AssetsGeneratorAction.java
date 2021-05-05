@@ -3,7 +3,11 @@ package cn.te0.flutter.action;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Table;
+import com.google.common.collect.TreeBasedTable;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
@@ -24,7 +28,6 @@ import java.util.stream.Collectors;
  */
 public class AssetsGeneratorAction extends AnAction {
     private static final String ASSETS_ROOT = "assets";
-    private static final Joiner joiner = Joiner.on("_");
     private static final Splitter splitter = Splitter.on(File.separator).omitEmptyStrings().trimResults();
 
     String base, last;
@@ -76,22 +79,25 @@ public class AssetsGeneratorAction extends AnAction {
     }
 
     public void updateDart() {
-        Multimap<String, String> res = ArrayListMultimap.create();
-        List<String> names = assets.keySet().stream().sorted().collect(Collectors.toList());
+        Table<String, String, String> tables = TreeBasedTable.create();
+        Set<String> names = assets.keySet();
         for (String name : names) {
             Collection<String> paths = assets.get(name);
-            String key = name.split("\\.")[0];
             for (String path : paths) {
-                List<String> list = splitter.splitToList(path);
+                List<String> list = Lists.newArrayList(splitter.splitToList(path));
                 //如果是变体目录
                 if (variant.contains(path)) {
                     list.remove(list.size() - 1);
                 }
-                String prefix = list.remove(0);
-                list.add(key);
-                res.put(prefix, joiner.join(paths));
+                String row = list.remove(0);
+                list.add(name);
+                String value = Joiner.on("/").skipNulls().join("assets", null, list.toArray());
+                String column = Joiner.on("_").join(list).split("\\.")[0];
+                if (tables.get(row, column) == null) {
+                    tables.put(row, column, value);
+                }
             }
         }
-        System.err.println(res);
+        System.err.println(tables);
     }
 }
