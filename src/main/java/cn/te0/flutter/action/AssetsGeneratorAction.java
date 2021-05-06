@@ -15,14 +15,18 @@ import com.intellij.openapi.project.Project;
 import com.ruiyu.file.FileHelpers;
 import com.ruiyu.helper.YamlHelper;
 import io.flutter.pub.PubRoot;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.jetbrains.annotations.NotNull;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -87,12 +91,25 @@ public class AssetsGeneratorAction extends AnAction {
     }
 
     public void updateYaml() {
-        List<String> paths = assets.values().stream().distinct().filter(item -> !variant.contains(item)).sorted().collect(Collectors.toList());
+        List<String> paths = assets.values().stream().distinct().filter(item -> !variant.contains(item)).sorted().map(s -> "assets" + s + "/").collect(Collectors.toList());
         PubRoot pubRoot = PubRoot.forFile(FileHelpers.getProjectIdeaFile(project));
+        String yamlFile = pubRoot.getPubspec().getPath();
+        String bakFile = String.format("%s.%s.bak", yamlFile, DateFormatUtils.format(new Date(), "yyyyMMddHHmm"));
         try {
-            Map<String, Object> map = new Yaml().load(new FileInputStream(pubRoot.getPubspec().getPath()));
+            //备份原文件
+            FileReader reader = new FileReader(yamlFile);
+            FileWriter writer = new FileWriter(bakFile);
+            IOUtils.copy(reader, writer);
+            //修改配置文件
+            Yaml yaml = new Yaml();
+            Map<String, Object> map = yaml.load(new FileInputStream(yamlFile));
+            ((Map) map.get("flutter")).put("assets", paths);
+            yaml.dump(map, new FileWriter(yamlFile));
+            reader.close();
+            writer.flush();
+            writer.close();
             System.err.println(map);
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
         }
     }
 
