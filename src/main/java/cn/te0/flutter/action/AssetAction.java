@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 /**
  * @author chaly
  */
-public class AssetsGeneratorAction extends AnAction {
+public class AssetAction extends AnAction {
     private static final String ASSETS_ROOT = "assets";
     private static final Splitter SPLITTER = Splitter.on(File.separator).omitEmptyStrings().trimResults();
 

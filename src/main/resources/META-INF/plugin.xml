@@ -50,11 +50,11 @@
 
     <actions>
         <!-- Add your actions here -->
-        <action id="cn.te0.flutter.New" class="cn.te0.flutter.action.NewFileGroupAction">
+        <action id="cn.te0.flutter.New" class="cn.te0.flutter.action.GroupAction">
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
         <action id="FlutterAssetsRefGenerator"
-                class="cn.te0.flutter.action.AssetsGeneratorAction"
+                class="cn.te0.flutter.action.AssetAction"
                 text="Generate Flutter Assets Reference"
                 description="Flutter assets ref generator"
                 icon="/icons/asset.svg">

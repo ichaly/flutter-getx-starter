@@ -9,9 +9,9 @@ import com.ruiyu.jsontodart.JsonToDartBeanAction;
 /**
  * @author chaly
  */
-public class NewFileGroupAction extends DefaultActionGroup implements DumbAware {
+public class GroupAction extends DefaultActionGroup implements DumbAware {
 
-    public NewFileGroupAction() {
+    public GroupAction() {
         setPopup(true);
         Presentation p = getTemplatePresentation();
         p.setIcon(Icons.LOGO);
@@ -20,7 +20,7 @@ public class NewFileGroupAction extends DefaultActionGroup implements DumbAware 
         //初始化工程
         add(new InitAction());
         //创建新页面
-        add(new NewViewAction());
+        add(new ViewAction());
         //创建的实体类
         add(new JsonToDartBeanAction());
     }

@@ -17,12 +17,12 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 
-public class NewViewAction extends AnAction {
+public class ViewAction extends AnAction {
     private Project project;
     private String psiPath;
     private DataService data;
 
-    NewViewAction() {
+    ViewAction() {
         getTemplatePresentation().setText("New View...");
     }
 
