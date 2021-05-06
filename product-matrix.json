@@ -21,6 +21,14 @@
     "dartPluginVersion": "203.7759",
     "flutterPluginVersion": "54.1.3",
     "sinceBuild": "201.0",
+    "untilBuild": "203.*"
+  },
+  "211.7142.45": {
+    "comments": "2021.1.1",
+    "ideaVersion": "211.7142.*",
+    "dartPluginVersion": "211.7233",
+    "flutterPluginVersion": "56.0.5",
+    "sinceBuild": "203.0",
     "untilBuild": "211.*"
   }
 }
