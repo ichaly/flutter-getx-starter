@@ -35,15 +35,14 @@ public class TemplateHelper {
         return SingletonHolder.INSTANCE;
     }
 
-    public void generator(String template, String target, Map<String, ?> data, String... extra) {
+    public void generator(String template, String target, Map<String, ?> data) {
         try (
             Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(target), CharsetUtil.UTF_8.name()))
         ) {
-            config.setSharedVariable("extra", extra);
             Template tpl = config.getTemplate(template, CharsetUtil.UTF_8.name());
             tpl.process(data, out);
-            out.flush();
         } catch (Exception ignored) {
+            ignored.printStackTrace();
         }
     }
 }

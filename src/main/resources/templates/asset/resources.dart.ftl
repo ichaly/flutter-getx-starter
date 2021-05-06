@@ -4,11 +4,10 @@ import 'package:lottie/lottie.dart';
 
 class R {
   /// This `R.image` struct is generated, and contains static references to static image asset resources.
-  static const String package = "${extra[0]!}";
-  static const image = _R_Image();
-  static const anim = _R_Anim();
-  static const json = _R_Json();
-  static const i18n = _R_I18n();
+  static const String package = "${packageName!}";
+<#list res?keys as key>
+  static const ${key!} = _R_${key?cap_first}();
+</#list>
 }
 
 extension StringExtension on String {
@@ -54,21 +53,13 @@ extension StringExtension on String {
     );
   }
 }
+<#list res?keys as group>
+class _R_${group?cap_first} {
+  const _R_${group?cap_first}();
 
-class _R_Image {
-  const _R_Image();
-
-  final String action_delete = "assets/image/action_delete.png";
+  <#list res[group]?keys as key>
+  final String ${key!} = "${res[group][key]}";
+  </#list>
 }
 
-class _R_Anim {
-  const _R_Anim();
-}
-
-class _R_Json {
-  const _R_Json();
-}
-
-class _R_I18n {
-  const _R_I18n();
-}
+</#list>

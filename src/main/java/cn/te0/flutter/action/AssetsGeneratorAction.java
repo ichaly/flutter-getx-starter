@@ -20,8 +20,10 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -98,7 +100,7 @@ public class AssetsGeneratorAction extends AnAction {
                 }
                 String row = list.remove(0);
                 list.add(file);
-                String value = Joiner.on("/").skipNulls().join("assets", null, list.toArray());
+                String value = Joiner.on("/").skipNulls().join("assets", row, list.toArray());
                 String column = Joiner.on("_").join(list).split("\\.")[0];
                 if (tables.get(row, column) == null) {
                     tables.put(row, column, value);
@@ -109,8 +111,11 @@ public class AssetsGeneratorAction extends AnAction {
         if (!file.exists()) {
             file.mkdirs();
         }
+        Map<String, Object> map = new HashMap();
+        map.put("packageName", name);
+        map.put("res", tables.rowMap());
         TemplateHelper.getInstance().generator(
-            "resources.dart.ftl", file.getAbsolutePath() + "/resources.dart", tables.rowMap(), name
+            "resources.dart.ftl", file.getAbsolutePath() + "/resources.dart", map
         );
     }
 }
