@@ -16,8 +16,11 @@ import com.ruiyu.file.FileHelpers;
 import com.ruiyu.helper.YamlHelper;
 import io.flutter.pub.PubRoot;
 import org.jetbrains.annotations.NotNull;
+import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -85,6 +88,12 @@ public class AssetsGeneratorAction extends AnAction {
 
     public void updateYaml() {
         List<String> paths = assets.values().stream().distinct().filter(item -> !variant.contains(item)).sorted().collect(Collectors.toList());
+        PubRoot pubRoot = PubRoot.forFile(FileHelpers.getProjectIdeaFile(project));
+        try {
+            Map<String, Object> map = new Yaml().load(new FileInputStream(pubRoot.getPubspec().getPath()));
+            System.err.println(map);
+        } catch (FileNotFoundException e) {
+        }
     }
 
     public void updateDart() {
