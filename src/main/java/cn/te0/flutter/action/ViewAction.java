@@ -23,7 +23,7 @@ public class ViewAction extends AnAction {
     private DataService data;
 
     ViewAction() {
-        getTemplatePresentation().setText("New View...");
+        getTemplatePresentation().setText("New View/Page...");
     }
 
     /**

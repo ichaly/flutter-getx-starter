@@ -1,4 +1,4 @@
-package cn.te0.flutter.utils;
+package cn.te0.flutter.helper;
 
 import com.intellij.openapi.util.IconLoader;
 
