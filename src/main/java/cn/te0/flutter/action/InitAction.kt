@@ -21,18 +21,18 @@ class InitAction : AnAction() {
     }
 
     override fun actionPerformed(e: AnActionEvent) {
-        var project: Project = e.getData(PlatformDataKeys.PROJECT)!!
-        val pubSpecConfig = YamlHelper.getPubSpecConfig(project)
+        val project: Project = e.getData(PlatformDataKeys.PROJECT)!!
+        YamlHelper.getPubSpecConfig(project)
         //判断是否是flutter项目
         if (YamlHelper.shouldActivateFor(project)) {
-            generateStructure(project);
+            generateStructure(project)
         } else {
             project.showNotify("This project is not the flutter project or the flutterJson in pubspec.yaml with the enable set to false")
         }
     }
 
     //初始化项目框架结构
-    fun generateStructure(project: Project) {
+    private fun generateStructure(project: Project) {
         ApplicationManager.getApplication().runWriteAction {
             PubRoot.forFile(FileHelpers.getProjectIdeaFile(project))?.run {
                 //初始化资源文件目录
@@ -45,19 +45,19 @@ class InitAction : AnAction() {
                 }
                 lib?.run {
                     //初始化插件生成的文件目录
-                    findChild("gen") ?: createChildDirectory(this, "gen")?.run {
+                    findChild("gen") ?: createChildDirectory(this, "gen").run {
                         findChild("json") ?: createChildDirectory(this, "json")
                         findChild("res") ?: createChildDirectory(this, "res")
                     }
                     //初始化app目录
-                    findChild("app") ?: createChildDirectory(this, "app")?.run {
+                    findChild("app") ?: createChildDirectory(this, "app").run {
                         findChild("base") ?: createChildDirectory(this, "base")
                         findChild("utils") ?: createChildDirectory(this, "utils")
                         findChild("entity") ?: createChildDirectory(this, "entity")
                         findChild("routes") ?: createChildDirectory(this, "routes")
                         findChild("views") ?: createChildDirectory(this, "views").run {
                             //创建一个home的默认模块
-                            ViewHelper.getInstance().createView("Home", path);
+                            ViewHelper.getInstance().createView("Home", path)
                         }
                     }
                     //初始化main.dart
