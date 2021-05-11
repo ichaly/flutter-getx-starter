@@ -1,7 +1,5 @@
 package cn.te0.flutter.ui;
 
-import lombok.Data;
-
 import javax.swing.*;
 
 /**
@@ -13,15 +11,36 @@ public class NewWidgetForm {
     private JRadioButton simpleMode;
     private JRadioButton view;
     private JRadioButton page;
-    private JRadioButton folder;
-    private JRadioButton prefix;
+    private JCheckBox folder;
+    private JCheckBox prefix;
+    private JCheckBox auto;
     private JTextField nameField;
+
+    public JPanel getRoot() {
+        return root;
+    }
 
     public String getName() {
         return nameField.getText();
     }
 
-    public JPanel getRoot() {
-        return root;
+    public boolean isDefaultMode() {
+        return defaultMode.isSelected();
+    }
+
+    public boolean isPage() {
+        return page.isSelected();
+    }
+
+    public boolean isUseFolder() {
+        return folder.isSelected();
+    }
+
+    public boolean isUsePrefix() {
+        return prefix.isSelected();
+    }
+
+    public boolean isAuto() {
+        return auto.isSelected();
     }
 }

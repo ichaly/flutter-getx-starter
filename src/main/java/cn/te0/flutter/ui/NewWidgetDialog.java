@@ -11,7 +11,7 @@ import java.util.TimerTask;
 
 /**
  * @author Chaly
- * new NewWidgetDialogWrapper().show();
+ * new NewWidgetDialog().show();
  */
 public class NewWidgetDialog extends DialogWrapper {
     private NewWidgetForm dialog;

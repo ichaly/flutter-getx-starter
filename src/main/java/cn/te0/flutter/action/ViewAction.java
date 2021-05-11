@@ -2,6 +2,7 @@ package cn.te0.flutter.action;
 
 import cn.te0.flutter.helper.DataService;
 import cn.te0.flutter.helper.ViewHelper;
+import cn.te0.flutter.ui.NewWidgetDialog;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
@@ -43,8 +44,9 @@ public class ViewAction extends AnAction {
     public void actionPerformed(AnActionEvent event) {
         project = event.getProject();
         psiPath = event.getData(PlatformDataKeys.PSI_ELEMENT).toString().split(":")[1];
-        initData();
-        initView();
+        new NewWidgetDialog().show();
+        //initData();
+        //initView();
     }
 
     private void initData() {
