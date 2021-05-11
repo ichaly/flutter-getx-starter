@@ -44,9 +44,8 @@ public class ViewAction extends AnAction {
     public void actionPerformed(AnActionEvent event) {
         project = event.getProject();
         psiPath = event.getData(PlatformDataKeys.PSI_ELEMENT).toString().split(":")[1];
-        new NewWidgetDialog().show();
-        //initData();
-        //initView();
+        initData();
+        initView();
     }
 
     private void initData() {

@@ -8,12 +8,10 @@ import javax.swing.*;
 public class NewWidgetForm {
     private JPanel root;
     private JRadioButton defaultMode;
-    private JRadioButton simpleMode;
-    private JRadioButton view;
-    private JRadioButton page;
     private JCheckBox folder;
     private JCheckBox prefix;
     private JCheckBox auto;
+    private JCheckBox page;
     private JTextField nameField;
 
     public JPanel getRoot() {
