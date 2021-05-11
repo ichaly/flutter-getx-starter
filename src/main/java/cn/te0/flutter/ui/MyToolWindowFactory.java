@@ -16,10 +16,10 @@ import org.jetbrains.annotations.NotNull;
  *                 factoryClass="cn.te0.flutter.ui.NewWidgetToolWindowFactory"/>
  * </extensions>
  */
-public class NewWidgetToolWindowFactory implements ToolWindowFactory, Condition<Project> {
+public class MyToolWindowFactory implements ToolWindowFactory, Condition<Project> {
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
-        NewWidgetDialog myToolWindow = new NewWidgetDialog();
+        NewWidgetForm myToolWindow = new NewWidgetForm();
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
         Content content = contentFactory.createContent(myToolWindow.getRoot(), "自定义tool window", false);
         toolWindow.getContentManager().addContent(content);
