@@ -10,6 +10,7 @@ import com.ruiyu.file.FileHelpers
 import com.ruiyu.helper.YamlHelper
 import com.ruiyu.utils.showNotify
 import io.flutter.pub.PubRoot
+import java.io.File
 
 class InitAction : AnAction() {
 
@@ -54,7 +55,28 @@ class InitAction : AnAction() {
                         findChild("base") ?: createChildDirectory(this, "base")
                         findChild("utils") ?: createChildDirectory(this, "utils")
                         findChild("entity") ?: createChildDirectory(this, "entity")
-                        findChild("routes") ?: createChildDirectory(this, "routes")
+                        findChild("common") ?: createChildDirectory(this, "common").run {
+                            File(this.path + "/app_route.dart").run {
+                                if (!exists()) {
+                                    createNewFile()
+                                }
+                            }
+                            File(this.path + "/app_config.dart").run {
+                                if (!exists()) {
+                                    createNewFile()
+                                }
+                            }
+                            File(this.path + "/app_api.dart").run {
+                                if (!exists()) {
+                                    createNewFile()
+                                }
+                            }
+                            File(this.path + "/app_extension.dart").run {
+                                if (!exists()) {
+                                    createNewFile()
+                                }
+                            }
+                        }
                         findChild("views") ?: createChildDirectory(this, "views").run {
                             //创建一个home的默认模块
                             ViewHelper.getInstance().createView("Home", path)
