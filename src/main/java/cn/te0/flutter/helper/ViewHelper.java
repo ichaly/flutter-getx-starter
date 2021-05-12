@@ -1,7 +1,6 @@
 package cn.te0.flutter.helper;
 
 import com.google.common.base.CaseFormat;
-import com.intellij.openapi.project.Project;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
@@ -28,7 +27,7 @@ public class ViewHelper {
         return SingletonHolder.instance;
     }
 
-    public void createView( String name, String folder) {
+    public void createView(String name, String folder) {
         String prefix = "";
         String tmp = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name);
         if (data.useFolder) {
@@ -47,12 +46,22 @@ public class ViewHelper {
     private void generateDefault(String name, String folder, String prefixName) {
         generateFile(name, folder, "state.dart", prefixName + data.stateName.toLowerCase() + ".dart");
         generateFile(name, folder, "logic.dart", prefixName + data.logicName.toLowerCase() + ".dart");
-        generateFile(name, folder, "view.dart", prefixName + data.viewName.toLowerCase() + ".dart");
+        if (data.isPage) {
+            generateFile(name, folder, "page.dart", prefixName + data.pageName.toLowerCase() + ".dart");
+            generateFile(name, folder, "binding.dart", prefixName + "binding" + ".dart");
+        } else {
+            generateFile(name, folder, "view.dart", prefixName + data.viewName.toLowerCase() + ".dart");
+        }
     }
 
     private void generateEasy(String name, String folder, String prefixName) {
         generateFile(name, folder, "easy/logic.dart", prefixName + data.logicName.toLowerCase() + ".dart");
-        generateFile(name, folder, "easy/view.dart", prefixName + data.viewName.toLowerCase() + ".dart");
+        if (data.isPage) {
+            generateFile(name, folder, "binding.dart", prefixName + "binding" + ".dart");
+            generateFile(name, folder, "easy/page.dart", prefixName + data.pageName.toLowerCase() + ".dart");
+        } else {
+            generateFile(name, folder, "easy/view.dart", prefixName + data.viewName.toLowerCase() + ".dart");
+        }
     }
 
     private void generateFile(String name, String filePath, String inputFileName, String outFileName) {

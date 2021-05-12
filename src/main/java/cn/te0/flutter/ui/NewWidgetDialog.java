@@ -62,6 +62,7 @@ public class NewWidgetDialog extends DialogWrapper {
         data.useFolder = form.isUseFolder();
         data.usePrefix = form.isUsePrefix();
         data.autoDispose = form.isAuto();
+        data.isPage = form.isPage();
         ViewHelper.getInstance().createView(form.getName(), basePath);
     }
 }
