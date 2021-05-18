@@ -51,7 +51,7 @@
     <actions>
         <!-- Add your actions here -->
         <action id="cn.te0.flutter.New" class="cn.te0.flutter.action.GroupAction">
-            <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="after" relative-to-action="WeighingNewGroup"/>
         </action>
         <action id="FlutterAssetsRefGenerator"
                 class="cn.te0.flutter.action.AssetAction"
