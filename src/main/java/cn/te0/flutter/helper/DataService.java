@@ -17,16 +17,11 @@ public class DataService implements PersistentStateComponent<DataService> {
         return ServiceManager.getService(DataService.class);
     }
 
-    public boolean defaultMode = GetXConfig.defaultMode;
-    public boolean useFolder = GetXConfig.useFolder;
-    public boolean usePrefix = GetXConfig.usePrefix;
-    public boolean autoDispose = GetXConfig.autoDispose;
-    public boolean isPage = GetXConfig.isPage;
-
-    public String logicName = GetXConfig.logicName;
-    public String viewName = GetXConfig.viewName;
-    public String stateName = GetXConfig.stateName;
-    public String pageName = GetXConfig.pageName;
+    public boolean isPage = false;
+    public boolean useFolder = true;
+    public boolean usePrefix = true;
+    public boolean defaultMode = true;
+    public boolean autoDispose = false;
 
     @Override
     public DataService getState() {

@@ -19,7 +19,7 @@
     ]]></description>
 
     <change-notes><![CDATA[
-      <b>1.0.0</b>
+      <b>1.0.1</b>
       <ul>
         <li>
           Support Flutter Module, Package and Plugin project.
@@ -37,11 +37,8 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
-        <applicationService serviceImplementation="cn.te0.flutter.helper.DataService"/>
-        <applicationConfigurable parentId="tools" instance="cn.te0.flutter.setting.SettingsConfigurable"
-                                 id="SettingsConfigurable" displayName="GetX Setting"/>
-
         <postStartupActivity implementation="com.ruiyu.workers.Initializer"/>
+        <applicationService serviceImplementation="cn.te0.flutter.helper.DataService"/>
         <applicationService serviceImplementation="com.ruiyu.setting.Settings"/>
         <projectConfigurable groupId="tools" displayName="FlutterJsonBeanFactory"
                              id="preferences.SingleFileExecutionConfigurable"
@@ -53,7 +50,7 @@
         <action id="cn.te0.flutter.New" class="cn.te0.flutter.action.GroupAction">
             <add-to-group group-id="ProjectViewPopupMenu" anchor="after" relative-to-action="WeighingNewGroup"/>
         </action>
-        <action id="FlutterAssetsRefGenerator"
+        <action id="cn.te0.flutter.Asset"
                 class="cn.te0.flutter.action.AssetAction"
                 text="Generate Flutter Assets Reference"
                 description="Flutter assets ref generator"

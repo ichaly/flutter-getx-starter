@@ -44,23 +44,23 @@ public class ViewHelper {
     }
 
     private void generateDefault(String name, String folder, String prefixName) {
-        generateFile(name, folder, "state.dart", prefixName + data.stateName.toLowerCase() + ".dart");
-        generateFile(name, folder, "logic.dart", prefixName + data.logicName.toLowerCase() + ".dart");
+        generateFile(name, folder, "state.dart", prefixName + "state.dart");
+        generateFile(name, folder, "logic.dart", prefixName + "logic.dart");
         if (data.isPage) {
-            generateFile(name, folder, "page.dart", prefixName + data.pageName.toLowerCase() + ".dart");
+            generateFile(name, folder, "page.dart", prefixName + "page.dart");
             generateFile(name, folder, "binding.dart", prefixName + "binding" + ".dart");
         } else {
-            generateFile(name, folder, "view.dart", prefixName + data.viewName.toLowerCase() + ".dart");
+            generateFile(name, folder, "view.dart", prefixName + "view.dart");
         }
     }
 
     private void generateEasy(String name, String folder, String prefixName) {
-        generateFile(name, folder, "easy/logic.dart", prefixName + data.logicName.toLowerCase() + ".dart");
+        generateFile(name, folder, "easy/logic.dart", prefixName + "logic.dart");
         if (data.isPage) {
             generateFile(name, folder, "binding.dart", prefixName + "binding" + ".dart");
-            generateFile(name, folder, "easy/page.dart", prefixName + data.pageName.toLowerCase() + ".dart");
+            generateFile(name, folder, "easy/page.dart", prefixName + "page.dart");
         } else {
-            generateFile(name, folder, "easy/view.dart", prefixName + data.viewName.toLowerCase() + ".dart");
+            generateFile(name, folder, "easy/view.dart", prefixName + "view.dart");
         }
     }
 
@@ -105,26 +105,8 @@ public class ViewHelper {
         if (data.usePrefix) {
             prefixName = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name) + "_";
         }
-        content = content.replaceAll("logic.dart", prefixName + data.logicName.toLowerCase() + ".dart");
-        content = content.replaceAll("state.dart", prefixName + data.stateName.toLowerCase() + ".dart");
-        //replace logic
-        if (outFileName.contains(data.logicName.toLowerCase())) {
-            content = content.replaceAll("Logic", data.logicName);
-            content = content.replaceAll("State", data.stateName);
-            content = content.replaceAll("state", data.stateName.toLowerCase());
-        }
-        //replace state
-        if (outFileName.contains(data.stateName.toLowerCase())) {
-            content = content.replaceAll("State", data.stateName);
-        }
-        //replace view
-        if (outFileName.contains(data.viewName.toLowerCase())) {
-            content = content.replaceAll("Page", data.viewName);
-            content = content.replaceAll("Logic", data.logicName);
-            content = content.replaceAll("logic", data.logicName.toLowerCase());
-            content = content.replaceAll("\\$nameState", "\\$name" + data.stateName);
-            content = content.replaceAll("state", data.stateName.toLowerCase());
-        }
+        content = content.replaceAll("logic.dart", prefixName + "logic.dart");
+        content = content.replaceAll("state.dart", prefixName + "state.dart");
         content = content.replaceAll("\\$name", name);
         return content;
     }
