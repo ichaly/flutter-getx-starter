@@ -141,7 +141,7 @@ public class AssetAction extends AnAction {
         map.put("packageName", name);
         map.put("res", tables.rowMap());
         TemplateHelper.getInstance().generator(
-            "resources.dart.ftl", file.getAbsolutePath() + "/resources.dart", map
+            "asset/resources.dart.ftl", file.getAbsolutePath() + "/resources.dart", map
         );
     }
 }

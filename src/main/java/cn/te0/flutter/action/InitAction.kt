@@ -1,5 +1,6 @@
 package cn.te0.flutter.action
 
+import cn.te0.flutter.helper.DataService
 import cn.te0.flutter.helper.ViewHelper
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -78,6 +79,8 @@ class InitAction : AnAction() {
                             }
                         }
                         findChild("views") ?: createChildDirectory(this, "views").run {
+                            DataService.getInstance().isPage = true;
+                            DataService.getInstance().autoDispose = true;
                             //创建一个home的默认模块
                             ViewHelper.getInstance().createView("Home", path)
                         }

@@ -1,7 +1,6 @@
 package cn.te0.flutter.helper;
 
 
-import cn.te0.flutter.utils.Utils;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
@@ -35,12 +34,12 @@ public class TemplateHelper {
         config.setDefaultEncoding(CharsetUtil.UTF_8.name());
         config.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
         config.setObjectWrapper(new DefaultObjectWrapper(Configuration.VERSION_2_3_31));
-        config.setClassForTemplateLoading(TemplateHelper.class, "/templates/asset");
+        config.setClassForTemplateLoading(TemplateHelper.class, "/templates");
     }
 
-    private static TemplateHashModel useStatic(String packageName) {
+    public static TemplateHashModel useStatic(String packageName) {
         try {
-            TemplateHashModel fileStatics = (TemplateHashModel) STATICS.get(packageName);
+            return (TemplateHashModel) STATICS.get(packageName);
         } catch (TemplateModelException e) {
             e.printStackTrace();
         }
@@ -56,13 +55,7 @@ public class TemplateHelper {
             Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(target), CharsetUtil.UTF_8.name()))
         ) {
             Template tpl = config.getTemplate(template, CharsetUtil.UTF_8.name());
-            data.put("Utils", useStatic(Utils.class.getName()));
 
-            data.put("isPage", DataService.getInstance().isPage);
-            data.put("useFolder", DataService.getInstance().useFolder);
-            data.put("usePrefix", DataService.getInstance().usePrefix);
-            data.put("autoDispose", DataService.getInstance().autoDispose);
-            data.put("defaultMode", DataService.getInstance().defaultMode);
 
             tpl.process(data, out);
         } catch (Exception ignored) {

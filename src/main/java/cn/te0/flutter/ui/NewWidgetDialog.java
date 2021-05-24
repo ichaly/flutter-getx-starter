@@ -16,10 +16,10 @@ import javax.swing.*;
  * new NewWidgetDialog().show();
  */
 public class NewWidgetDialog extends DialogWrapper {
-    private String basePath;
-    private Project project;
-    private DataService data;
-    private NewWidgetForm form;
+    private final String basePath;
+    private final Project project;
+    private final DataService data;
+    private final NewWidgetForm form;
 
     public NewWidgetDialog(Project project, String basePath) {
         super(true);

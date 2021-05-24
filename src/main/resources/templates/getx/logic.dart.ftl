@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 
 <#if defaultMode??>
-import '${Utils.toUnderline(name)}_state.dart';
+import '${Utils.toUnderline(name!)}_state.dart';
 </#if>
 
 class ${name!}Logic extends GetxController {

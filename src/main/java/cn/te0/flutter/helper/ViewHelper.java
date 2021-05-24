@@ -1,5 +1,6 @@
 package cn.te0.flutter.helper;
 
+import cn.te0.flutter.utils.Utils;
 import com.google.common.base.CaseFormat;
 
 import java.io.BufferedWriter;
@@ -8,6 +9,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author chaly
@@ -29,17 +32,39 @@ public class ViewHelper {
 
     public void createView(String name, String folder) {
         String prefix = "";
-        String tmp = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name);
+        String tmp = Utils.toUnderline(name);
         if (data.useFolder) {
             folder = folder + "/" + tmp;
         }
         if (data.usePrefix) {
             prefix = tmp + "_";
         }
-        if (data.defaultMode) {
-            generateDefault(name, folder, prefix);
-        } else {
-            generateEasy(name, folder, prefix);
+        File file = new File(folder);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+
+        Map<String, Object> map = new HashMap();
+        map.put("Utils", TemplateHelper.useStatic(Utils.class.getName()));
+        map.put("name", name);
+        map.put("pageName", "Page");
+        map.put("viewName", "View");
+        map.put("isPage", DataService.getInstance().isPage);
+        map.put("useFolder", DataService.getInstance().useFolder);
+        map.put("usePrefix", DataService.getInstance().usePrefix);
+        map.put("autoDispose", DataService.getInstance().autoDispose);
+        map.put("defaultMode", DataService.getInstance().defaultMode);
+
+        TemplateHelper.getInstance().generator(
+            "getx/weiget.dart.ftl", String.format("%s/%s%s.dart", folder, prefix, data.isPage ? "page" : "view"), map
+        );
+        TemplateHelper.getInstance().generator(
+            "getx/logic.dart.ftl", String.format("%s/%slogic.dart", folder, prefix), map
+        );
+        if (DataService.getInstance().defaultMode) {
+            TemplateHelper.getInstance().generator(
+                "getx/state.dart.ftl", String.format("%s/%sstate.dart", folder, prefix), map
+            );
         }
     }
 
