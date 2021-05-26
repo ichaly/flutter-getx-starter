@@ -1,6 +1,6 @@
 package cn.te0.flutter.action
 
-import cn.te0.flutter.helper.DataService
+import cn.te0.flutter.helper.GetXConfig
 import cn.te0.flutter.helper.ViewHelper
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -56,6 +56,7 @@ class InitAction : AnAction() {
                         findChild("base") ?: createChildDirectory(this, "base")
                         findChild("utils") ?: createChildDirectory(this, "utils")
                         findChild("entity") ?: createChildDirectory(this, "entity")
+                        findChild("views") ?: createChildDirectory(this, "views")
                         findChild("common") ?: createChildDirectory(this, "common").run {
                             File(this.path + "/app_route.dart").run {
                                 if (!exists()) {
@@ -78,17 +79,16 @@ class InitAction : AnAction() {
                                 }
                             }
                         }
-                        findChild("views") ?: createChildDirectory(this, "views").run {
-                            DataService.getInstance().isPage = true;
-                            DataService.getInstance().autoDispose = true;
+                        findChild("pages") ?: createChildDirectory(this, "pages").run {
+                            GetXConfig.isPage = true;
+                            GetXConfig.autoDispose = true;
                             //创建一个home的默认模块
-                            ViewHelper.getInstance().createView("Home", path)
+                            ViewHelper.getInstance().createView(project, "Home", path)
                         }
                     }
                     //初始化main.dart
                 }
             }
-            project.baseDir.refresh(false, true)
         }
     }
 }

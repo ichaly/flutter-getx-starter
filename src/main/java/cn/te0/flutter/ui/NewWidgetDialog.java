@@ -1,6 +1,6 @@
 package cn.te0.flutter.ui;
 
-import cn.te0.flutter.helper.DataService;
+import cn.te0.flutter.helper.GetXConfig;
 import cn.te0.flutter.helper.ViewHelper;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
@@ -18,7 +18,6 @@ import javax.swing.*;
 public class NewWidgetDialog extends DialogWrapper {
     private final String basePath;
     private final Project project;
-    private final DataService data;
     private final NewWidgetForm form;
 
     public NewWidgetDialog(Project project, String basePath) {
@@ -28,7 +27,6 @@ public class NewWidgetDialog extends DialogWrapper {
         setTitle("GetX Template Code Produce");
         setSize(460, 360);
         form = new NewWidgetForm();
-        data = DataService.getInstance();
         init();
     }
 
@@ -58,11 +56,11 @@ public class NewWidgetDialog extends DialogWrapper {
         }
         close(CLOSE_EXIT_CODE);
         //deal default value
-        data.defaultMode = form.isDefaultMode();
-        data.useFolder = form.isUseFolder();
-        data.usePrefix = form.isUsePrefix();
-        data.autoDispose = form.isAuto();
-        data.isPage = form.isPage();
-        ViewHelper.getInstance().createView(form.getName(), basePath);
+        GetXConfig.defaultMode = form.isDefaultMode();
+        GetXConfig.useFolder = form.isUseFolder();
+        GetXConfig.usePrefix = form.isUsePrefix();
+        GetXConfig.autoDispose = form.isAuto();
+        GetXConfig.isPage = form.isPage();
+        ViewHelper.getInstance().createView(project, form.getName(), basePath);
     }
 }

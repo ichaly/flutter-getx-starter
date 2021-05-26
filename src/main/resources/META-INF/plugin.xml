@@ -38,7 +38,7 @@
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
         <postStartupActivity implementation="com.ruiyu.workers.Initializer"/>
-        <applicationService serviceImplementation="cn.te0.flutter.helper.DataService"/>
+        <applicationService serviceImplementation="cn.te0.flutter.helper.GetXConfig"/>
         <applicationService serviceImplementation="com.ruiyu.setting.Settings"/>
         <projectConfigurable groupId="tools" displayName="FlutterJsonBeanFactory"
                              id="preferences.SingleFileExecutionConfigurable"
