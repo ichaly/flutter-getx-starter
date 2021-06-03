@@ -13,7 +13,9 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectUtil;
 import com.ruiyu.file.FileHelpers;
+import com.ruiyu.utils.ExtensionsKt;
 import io.flutter.pub.PubRoot;
 import org.jetbrains.annotations.NotNull;
 
@@ -50,7 +52,7 @@ public class AssetAction extends AnAction {
         getAssets(new File(base));
         updateYaml();
         updateDart();
-        project.getBaseDir().refresh(false, true);
+        Objects.requireNonNull(ProjectUtil.guessProjectDir(project)).refresh(false, true);
     }
 
     public void getAssets(File file) {
@@ -121,5 +123,6 @@ public class AssetAction extends AnAction {
         TemplateHelper.getInstance().generator(
             "asset/resources.dart.ftl", file.getAbsolutePath() + "/resources.dart", map
         );
+        ExtensionsKt.showNotify(project, "Assets reference has been updated successfully.");
     }
 }

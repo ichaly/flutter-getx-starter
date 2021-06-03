@@ -1,10 +1,7 @@
 package com.ruiyu.utils
 
 import com.google.gson.JsonArray
-import com.intellij.notification.NotificationDisplayType
-import com.intellij.notification.NotificationGroup
-import com.intellij.notification.NotificationType
-import com.intellij.notification.Notifications
+import com.intellij.notification.NotificationGroupManager
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
@@ -146,13 +143,15 @@ fun JsonArray.onlyOneSubArrayContainsElementAndAllObjectRecursive(): Boolean {
     return get(0).asJsonArray.onlyOneSubArrayContainsElementAndAllObjectRecursive()
 }
 
-
 fun Project.showNotify(notifyMessage: String) {
     try {
-        val notificationGroup = NotificationGroup("JSON to Dart Class", NotificationDisplayType.BALLOON, true)
         ApplicationManager.getApplication().invokeLater {
-            val notification = notificationGroup.createNotification(notifyMessage, NotificationType.INFORMATION)
-            Notifications.Bus.notify(notification, this)
+            NotificationGroupManager.getInstance()
+                .getNotificationGroup("FlutterGetXStarterNotifier")
+                .createNotification(
+                    title = "Flutter GetX Starter",
+                    content = notifyMessage
+                ).notify(this)
         }
     } catch (e: Exception) {
         e.printStackTrace()

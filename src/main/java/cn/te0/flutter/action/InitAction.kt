@@ -104,6 +104,7 @@ class InitAction : AnAction() {
                     //初始化main.dart
                 }
             }
+            project.showNotify("Project is initialized successfully.")
         }
     }
 }

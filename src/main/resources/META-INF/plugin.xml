@@ -43,6 +43,7 @@
         <projectConfigurable groupId="tools" displayName="FlutterJsonBeanFactory"
                              id="preferences.SingleFileExecutionConfigurable"
                              instance="com.ruiyu.setting.SettingComponent"/>
+        <notificationGroup id="FlutterGetXStarterNotifier" displayType="BALLOON"/>
     </extensions>
 
     <actions>
