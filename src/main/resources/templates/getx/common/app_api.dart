@@ -2,11 +2,10 @@
 import './utils/http.dart';
 
 class Api {
-  /// 获取播放token
-  static Future<dynamic> getVODPlayAuth(fileId) async {
+  static Future<dynamic> getHome(test) async {
     Map data = await Http.get(
-      "/plat-zqa-server/storage/0.1.0/getVODPlayAuth",
-      params: {"fileId": fileId},
+      "/example/home/0.1.0/getHome",
+      params: {"test": test},
     );
     return data;
   }
