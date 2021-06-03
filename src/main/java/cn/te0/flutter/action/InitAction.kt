@@ -1,17 +1,19 @@
 package cn.te0.flutter.action
 
 import cn.te0.flutter.helper.GetXConfig
+import cn.te0.flutter.helper.TemplateHelper
 import cn.te0.flutter.helper.ViewHelper
+import cn.te0.flutter.helper.YamlHelper
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.ruiyu.file.FileHelpers
-import com.ruiyu.helper.YamlHelper
 import com.ruiyu.utils.showNotify
 import io.flutter.pub.PubRoot
 import java.io.File
+import java.util.jar.JarFile
 
 class InitAction : AnAction() {
 
@@ -24,7 +26,6 @@ class InitAction : AnAction() {
 
     override fun actionPerformed(e: AnActionEvent) {
         val project: Project = e.getData(PlatformDataKeys.PROJECT)!!
-        YamlHelper.getPubSpecConfig(project)
         //判断是否是flutter项目
         if (YamlHelper.shouldActivateFor(project)) {
             generateStructure(project)
@@ -44,6 +45,20 @@ class InitAction : AnAction() {
                     findChild("json") ?: createChildDirectory(this, "json")//Json资源
                     findChild("anim") ?: createChildDirectory(this, "anim")//动画资源
                     findChild("i18n") ?: createChildDirectory(this, "i18n")//国际化资源
+                    //添加常用依赖
+                    YamlHelper.updateYaml(
+                        pubspec.path
+                    ) { map: Map<String?, Any?> ->
+                        (map.get("dependencies") as HashMap<String, Any>).run {
+                            putIfAbsent("get", "^4.1.4")
+                            putIfAbsent("lottie", "^1.0.1")
+                            putIfAbsent("crypto", "^3.0.1")
+                            putIfAbsent("convert", "^3.0.0")
+                            putIfAbsent("fluttertoast", "^8.0.7")
+                            putIfAbsent("flutter_screenutil", "^5.0.0+2")
+                            putIfAbsent("dio_cookie_manager", "^2.0.0")
+                        }
+                    }
                 }
                 lib?.run {
                     //初始化插件生成的文件目录
@@ -53,36 +68,36 @@ class InitAction : AnAction() {
                     }
                     //初始化app目录
                     findChild("app") ?: createChildDirectory(this, "app").run {
-                        findChild("base") ?: createChildDirectory(this, "base")
-                        findChild("utils") ?: createChildDirectory(this, "utils")
-                        findChild("entity") ?: createChildDirectory(this, "entity")
-                        findChild("views") ?: createChildDirectory(this, "views")
-                        findChild("common") ?: createChildDirectory(this, "common").run {
-                            File(this.path + "/app_route.dart").run {
-                                if (!exists()) {
-                                    createNewFile()
-                                }
+                        //添加通用工具类
+                        val jf = JarFile(
+                            InitAction::class.java.getResource("/templates")?.file
+                                ?.replace("!/templates", "")
+                                ?.replace("file:", "")
+                        )
+                        for (entry in jf.entries()) {
+                            if (!entry.name.startsWith("templates/getx/common/")) {
+                                continue
                             }
-                            File(this.path + "/app_config.dart").run {
-                                if (!exists()) {
-                                    createNewFile()
+                            val target = this.path + entry.name.replace("templates/getx", "")
+                            if (entry.isDirectory) {
+                                val file = File(target)
+                                if (!file.exists()) {
+                                    file.mkdirs()
                                 }
+                                continue
                             }
-                            File(this.path + "/app_api.dart").run {
-                                if (!exists()) {
-                                    createNewFile()
-                                }
-                            }
-                            File(this.path + "/app_extension.dart").run {
-                                if (!exists()) {
-                                    createNewFile()
-                                }
-                            }
+                            val map: Map<String?, Any?> = HashMap()
+                            TemplateHelper.getInstance().generator(
+                                entry.name.replace("templates/", ""), target, map
+                            )
                         }
+                        //初始化目录结构
+                        findChild("views") ?: createChildDirectory(this, "views")
+                        findChild("entity") ?: createChildDirectory(this, "entity")
                         findChild("pages") ?: createChildDirectory(this, "pages").run {
-                            GetXConfig.isPage = true;
-                            GetXConfig.autoDispose = true;
-                            //创建一个home的默认模块
+                            //创建一个默认的Home页面
+                            GetXConfig.isPage = true
+                            GetXConfig.autoDispose = true
                             ViewHelper.getInstance().createView(project, "Home", path)
                         }
                     }

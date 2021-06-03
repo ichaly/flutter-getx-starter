@@ -27,7 +27,7 @@ public class ViewHelper {
 
     public void createView(Project project, String name, String folder) {
         String prefix = "";
-        String tmp = Utils.toUnderline(name);
+        String tmp = Utils.toLowerUnderline(name);
         if (GetXConfig.useFolder) {
             folder = folder + "/" + tmp;
         }

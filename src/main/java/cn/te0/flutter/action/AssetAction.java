@@ -1,6 +1,7 @@
 package cn.te0.flutter.action;
 
 import cn.te0.flutter.helper.TemplateHelper;
+import cn.te0.flutter.helper.YamlHelper;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ArrayListMultimap;
@@ -13,20 +14,12 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
 import com.ruiyu.file.FileHelpers;
-import com.ruiyu.helper.YamlHelper;
 import io.flutter.pub.PubRoot;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
 import org.jetbrains.annotations.NotNull;
-import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -52,7 +45,7 @@ public class AssetAction extends AnAction {
         project = e.getData(PlatformDataKeys.PROJECT);
         base = Objects.requireNonNull(project).getBasePath() + File.separator + ASSETS_ROOT;
         if (Objects.requireNonNull(PubRoot.forFile(FileHelpers.getProjectIdeaFile(project))).isFlutterPlugin()) {
-            name = Objects.requireNonNull(YamlHelper.getPubSpecConfig(project)).getName();
+            name = YamlHelper.getName(project);
         }
         getAssets(new File(base));
         updateYaml();
@@ -92,25 +85,10 @@ public class AssetAction extends AnAction {
 
     public void updateYaml() {
         List<String> paths = assets.values().stream().distinct().filter(item -> !variant.contains(item)).sorted().map(s -> "assets" + s + "/").collect(Collectors.toList());
-        PubRoot pubRoot = PubRoot.forFile(FileHelpers.getProjectIdeaFile(project));
-        String yamlFile = pubRoot.getPubspec().getPath();
-        String bakFile = String.format("%s.%s.bak", yamlFile, DateFormatUtils.format(new Date(), "yyyyMMddHHmm"));
-        try {
-            //备份原文件
-            FileReader reader = new FileReader(yamlFile);
-            FileWriter writer = new FileWriter(bakFile);
-            IOUtils.copy(reader, writer);
-            //修改配置文件
-            Yaml yaml = new Yaml();
-            Map<String, Object> map = yaml.load(new FileInputStream(yamlFile));
+        String yamlFile = Objects.requireNonNull(PubRoot.forFile(FileHelpers.getProjectIdeaFile(project))).getPubspec().getPath();
+        YamlHelper.updateYaml(yamlFile, map -> {
             ((Map) map.get("flutter")).put("assets", paths);
-            yaml.dump(map, new FileWriter(yamlFile));
-            reader.close();
-            writer.flush();
-            writer.close();
-            System.err.println(map);
-        } catch (Exception e) {
-        }
+        });
     }
 
     public void updateDart() {

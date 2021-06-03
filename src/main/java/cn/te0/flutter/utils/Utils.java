@@ -7,9 +7,16 @@ import com.google.common.base.CaseFormat;
  */
 public class Utils {
     /**
-     * 驼峰转下划线
+     * 驼峰转小写下划线
      */
-    public static String toUnderline(String name) {
+    public static String toLowerUnderline(String name) {
         return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name);
+    }
+
+    /**
+     * 驼峰转大写下划线
+     */
+    public static String toUpperUnderline(String name) {
+        return CaseFormat.UPPER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, name);
     }
 }

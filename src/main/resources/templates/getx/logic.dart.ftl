@@ -2,7 +2,7 @@
 import 'package:get/get.dart';
 
 <#if defaultMode>
-import '${usePrefix?string(Utils.toUnderline(name!)+'_','')}state.dart';
+import '${usePrefix?string(Utils.toLowerUnderline(name!)+'_','')}state.dart';
 </#if>
 
 class ${name!}Logic extends GetxController {

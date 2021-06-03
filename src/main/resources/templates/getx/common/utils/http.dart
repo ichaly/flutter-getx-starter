@@ -11,7 +11,7 @@ import './http/cookie_manager.dart';
 import './logger.dart';
 
 class Http {
-  static Dio? _dio;
+  static Dio _dio;
   static const int SEND_TIMEOUT = 10000;
   static const int RECEIVE_TIMEOUT = 3000;
   static const int CONNECT_TIMEOUT = 10000;
@@ -48,7 +48,7 @@ class Http {
         };
       }
     }
-    return _dio!;
+    return _dio;
   }
 
   static _parseData(Map<String, dynamic> data) {
@@ -67,8 +67,8 @@ class Http {
 
   static Future<Map<String, dynamic>> get(
       String url, {
-        Map<String, dynamic>? params,
-        Map<String, dynamic>? headers,
+        Map<String, dynamic> params,
+        Map<String, dynamic> headers,
       }) async {
     Response response = await _create().get(url, queryParameters: params, options: Options(headers: headers));
     return _parseData(response.data);
@@ -76,8 +76,8 @@ class Http {
 
   static Future<Map<String, dynamic>> post(
       String url, {
-        Map<String, dynamic>? params,
-        Map<String, dynamic>? headers,
+        Map<String, dynamic> params,
+        Map<String, dynamic> headers,
       }) async {
     Response response = await _create().post(url, data: params, options: Options(headers: headers));
     return _parseData(response.data);

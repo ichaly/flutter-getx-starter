@@ -30,7 +30,9 @@ class PrivateCookieManager extends CookieManager {
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    _saveCookies(response).then((_) => handler.next(response)).catchError((e, stackTrace) {
+    _saveCookies(response)
+        .then((_) => handler.next(response))
+        .catchError((e, stackTrace) {
       var err = DioError(requestOptions: response.requestOptions, error: e);
       err.stackTrace = stackTrace;
       handler.reject(err, true);
@@ -40,9 +42,11 @@ class PrivateCookieManager extends CookieManager {
   @override
   void onError(DioError err, ErrorInterceptorHandler handler) {
     if (err.response != null) {
-      _saveCookies(err.response!).then((_) => handler.next(err)).catchError((e, stackTrace) {
+      _saveCookies(err.response)
+          .then((_) => handler.next(err))
+          .catchError((e, stackTrace) {
         var _err = DioError(
-          requestOptions: err.response!.requestOptions,
+          requestOptions: err.response.requestOptions,
           error: e,
         );
         _err.stackTrace = stackTrace;
@@ -76,10 +80,10 @@ class PrivateCookieManager extends CookieManager {
 class _Cookie implements Cookie {
   String name;
   String value;
-  DateTime? expires;
-  int? maxAge;
-  String? domain;
-  String? path;
+  DateTime expires;
+  int maxAge;
+  String domain;
+  String path;
   bool httpOnly = false;
   bool secure = false;
 
@@ -185,7 +189,7 @@ class _Cookie implements Cookie {
     StringBuffer sb = new StringBuffer();
     sb..write(name)..write("=")..write(value);
     if (expires != null) {
-      sb..write("; Expires=")..write(HttpDate.format(expires!));
+      sb..write("; Expires=")..write(HttpDate.format(expires));
     }
     if (maxAge != null) {
       sb..write("; Max-Age=")..write(maxAge);
@@ -223,8 +227,13 @@ class _Cookie implements Cookie {
     ];
     for (int i = 0; i < name.length; i++) {
       int codeUnit = name.codeUnits[i];
-      if (codeUnit <= 32 || codeUnit >= 127 || separators.indexOf(name[i]) >= 0) {
-        throw new FormatException("Invalid character in cookie name, code unit: '$codeUnit'", name, i);
+      if (codeUnit <= 32 ||
+          codeUnit >= 127 ||
+          separators.indexOf(name[i]) >= 0) {
+        throw new FormatException(
+            "Invalid character in cookie name, code unit: '$codeUnit'",
+            name,
+            i);
       }
     }
 
@@ -232,7 +241,9 @@ class _Cookie implements Cookie {
     // double quotes are not allowed.
     int start = 0;
     int end = value.length;
-    if (2 <= value.length && value.codeUnits[start] == 0x22 && value.codeUnits[end - 1] == 0x22) {
+    if (2 <= value.length &&
+        value.codeUnits[start] == 0x22 &&
+        value.codeUnits[end - 1] == 0x22) {
       start++;
       end--;
     }
@@ -244,7 +255,10 @@ class _Cookie implements Cookie {
           (codeUnit >= 0x2D && codeUnit <= 0x3A) ||
           (codeUnit >= 0x3C && codeUnit <= 0x5B) ||
           (codeUnit >= 0x5D && codeUnit <= 0x7E))) {
-        throw new FormatException("Invalid character in cookie value, code unit: '$codeUnit'", value, i);
+        throw new FormatException(
+            "Invalid character in cookie value, code unit: '$codeUnit'",
+            value,
+            i);
       }
     }
   }
@@ -322,10 +336,10 @@ class _Cookie implements Cookie {
       while (!isEnd() && isDelimiter(date[position])) position++;
     }
 
-    String? timeStr;
-    String? dayOfMonthStr;
-    String? monthStr;
-    String? yearStr;
+    String timeStr;
+    String dayOfMonthStr;
+    String monthStr;
+    String yearStr;
 
     for (var token in tokens) {
       if (token.length < 1) continue;
@@ -338,29 +352,35 @@ class _Cookie implements Cookie {
         dayOfMonthStr = token;
       } else if (monthStr == null && getMonth(token) >= 0) {
         monthStr = token;
-      } else if (yearStr == null && token.length >= 2 && isDigit(token[0]) && isDigit(token[1])) {
+      } else if (yearStr == null &&
+          token.length >= 2 &&
+          isDigit(token[0]) &&
+          isDigit(token[1])) {
         yearStr = token;
       }
     }
 
-    if (timeStr == null || dayOfMonthStr == null || monthStr == null || yearStr == null) {
+    if (timeStr == null ||
+        dayOfMonthStr == null ||
+        monthStr == null ||
+        yearStr == null) {
       error();
     }
 
-    int year = toInt(yearStr!);
+    int year = toInt(yearStr);
     if (year >= 70 && year <= 99)
       year += 1900;
     else if (year >= 0 && year <= 69) year += 2000;
     if (year < 1601) error();
 
-    int dayOfMonth = toInt(dayOfMonthStr!);
+    int dayOfMonth = toInt(dayOfMonthStr);
     if (dayOfMonth < 1 || dayOfMonth > 31) error();
 
-    int month = getMonth(monthStr!) + 1;
+    int month = getMonth(monthStr) + 1;
 
     var timeList = timeStr?.split(":");
     if (timeList?.length != 3) error();
-    int hour = toInt(timeList![0]);
+    int hour = toInt(timeList[0]);
     int minute = toInt(timeList[1]);
     int second = toInt(timeList[2]);
     if (hour > 23) error();
@@ -368,12 +388,13 @@ class _Cookie implements Cookie {
     if (second > 59) error();
 
     return new DateTime.utc(
-        year,
-        month,
-        dayOfMonth,
-        hour,
-        minute,
-        second,
-        0);
+      year,
+      month,
+      dayOfMonth,
+      hour,
+      minute,
+      second,
+      0,
+    );
   }
 }
