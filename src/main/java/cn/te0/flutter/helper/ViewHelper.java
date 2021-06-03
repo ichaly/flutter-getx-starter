@@ -7,6 +7,7 @@ import com.intellij.openapi.project.ProjectUtil;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author chaly
@@ -14,14 +15,14 @@ import java.util.Map;
 public class ViewHelper {
 
     private static class SingletonHolder {
-        private static ViewHelper instance = new ViewHelper();
+        private static final ViewHelper INSTANCE = new ViewHelper();
     }
 
     private ViewHelper() {
     }
 
     public static ViewHelper getInstance() {
-        return SingletonHolder.instance;
+        return SingletonHolder.INSTANCE;
     }
 
     public void createView(Project project, String name, String folder) {
@@ -38,7 +39,7 @@ public class ViewHelper {
             file.mkdirs();
         }
 
-        Map<String, Object> map = new HashMap();
+        Map<String, Object> map = new HashMap<>();
         map.put("Utils", TemplateHelper.useStatic(Utils.class.getName()));
         map.put("name", name);
         map.put("pageName", "Page");
@@ -65,6 +66,6 @@ public class ViewHelper {
                 "getx/binding.dart.ftl", String.format("%s/%sbinding.dart", folder, prefix), map
             );
         }
-        ProjectUtil.guessProjectDir(project).refresh(false, true);
+        Objects.requireNonNull(ProjectUtil.guessProjectDir(project)).refresh(false, true);
     }
 }

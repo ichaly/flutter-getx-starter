@@ -55,11 +55,9 @@ public class TemplateHelper {
             Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(target), CharsetUtil.UTF_8.name()))
         ) {
             Template tpl = config.getTemplate(template, CharsetUtil.UTF_8.name());
-
-
             tpl.process(data, out);
-        } catch (Exception ignored) {
-            ignored.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
