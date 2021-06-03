@@ -13,27 +13,11 @@ class PrivateCookieManager extends CookieManager {
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     Future.wait([
       cookieJar.loadForRequest(options.uri),
-      // ZHIQCommunicationService.getUserLoginData(),
     ]).then((res) {
       List<Cookie> cookies = res[0];
       cookies.removeWhere((Cookie cookie) {
-        if (cookie.expires != null) {
-          return cookie.expires!.isBefore(DateTime.now());
-        }
-        return false;
+        return cookie.expires?.isBefore(DateTime.now()) ?? false;
       });
-      // var userInfo = res[1] ?? {};
-      // _appendCookie(cookies, 'uid', userInfo['userId']);
-      // _appendCookie(cookies, 'access_token', userInfo['accessToken']);
-      // _appendCookie(cookies, 'refresh_token', userInfo['refreshToken']);
-      // _appendCookie(cookies, 'device_uuid', userInfo['deviceUUID']);
-      // _appendCookie(cookies, 'platform', userInfo['platform']);
-      // _appendCookie(cookies, 'app_version', userInfo['appVersion']);
-      // _appendCookie(cookies, 'ticket', userInfo['userTicket']);
-      // _appendCookie(cookies, 'role_type', userInfo['roleType']);
-      // _appendCookie(cookies, 'businessType', userInfo['businessType']);
-      // _appendCookie(cookies, 'sub_platform', userInfo['sub_platform']);
-
       String cookie = CookieManager.getCookies(cookies);
       if (cookie.isNotEmpty) options.headers[HttpHeaders.cookieHeader] = cookie;
       handler.next(options);
@@ -383,6 +367,13 @@ class _Cookie implements Cookie {
     if (minute > 59) error();
     if (second > 59) error();
 
-    return new DateTime.utc(year, month, dayOfMonth, hour, minute, second, 0);
+    return new DateTime.utc(
+        year,
+        month,
+        dayOfMonth,
+        hour,
+        minute,
+        second,
+        0);
   }
 }
