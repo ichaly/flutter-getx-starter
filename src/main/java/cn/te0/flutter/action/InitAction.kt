@@ -92,8 +92,8 @@ class InitAction : AnAction() {
                             )
                         }
                         //初始化目录结构
-                        findChild("views") ?: createChildDirectory(this, "views")
                         findChild("entity") ?: createChildDirectory(this, "entity")
+                        findChild("views") ?: createChildDirectory(this, "views")
                         findChild("pages") ?: createChildDirectory(this, "pages").run {
                             //创建一个默认的Home页面
                             GetXConfig.isPage = true

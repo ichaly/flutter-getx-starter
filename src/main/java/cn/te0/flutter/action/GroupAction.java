@@ -1,20 +1,23 @@
 package cn.te0.flutter.action;
 
-import cn.te0.flutter.helper.Icons;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.project.DumbAware;
+import com.intellij.openapi.util.IconLoader;
 import com.ruiyu.jsontodart.JsonToDartBeanAction;
+
+import javax.swing.*;
 
 /**
  * @author chaly
  */
 public class GroupAction extends DefaultActionGroup implements DumbAware {
+    private static final Icon LOGO = IconLoader.getIcon("/icons/logo.svg", GroupAction.class);
 
     public GroupAction() {
         setPopup(true);
         Presentation p = getTemplatePresentation();
-        p.setIcon(Icons.LOGO);
+        p.setIcon(LOGO);
         p.setText("Flutter GetX Starter");
 
         //初始化工程

@@ -1,6 +1,5 @@
 package cn.te0.flutter.helper;
 
-import cn.te0.flutter.utils.Utils;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectUtil;
 
