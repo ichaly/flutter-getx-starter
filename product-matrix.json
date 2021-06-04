@@ -4,7 +4,7 @@
     "ideaVersion": "211.7142.*",
     "dartPluginVersion": "211.7233",
     "flutterPluginVersion": "56.0.5",
-    "sinceBuild": "203.0",
-    "untilBuild": "211.*"
+    "sinceBuild": "211.0",
+    "untilBuild": "211.1.*"
   }
 }
