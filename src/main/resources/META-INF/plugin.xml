@@ -16,11 +16,11 @@
         <li>Right-click the File: -> Flutter GetX Starter</li>
       </ul>
       <br>
-      <p><img src="https://gitee.com/ichaly/flutter-getx-starter/blob/master/doc/doc_img_1.png" alt="demo" width="800"></p>
+      <p><img src="https://gitee.com/ichaly/flutter-getx-starter/raw/master/doc/doc_img_1.png" alt="demo" width="800"></p>
     ]]></description>
 
     <change-notes><![CDATA[
-      <b>1.0.2</b>
+      <b>1.0.3</b>
       <ul>
         <li>
           Support Flutter Module, Package and Plugin project.
