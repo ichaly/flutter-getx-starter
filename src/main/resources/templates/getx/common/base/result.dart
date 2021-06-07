@@ -9,11 +9,11 @@ class Result<T> {
   Result({this.data, this.code, this.msg});
 
   Result.fromJson(
-      Map<String, dynamic> json, {
-        List msgAlias = const ["msg"],
-        List codeAlias = const ["code"],
-        List dataAlias = const ["data"],
-      }) {
+    Map<String, dynamic> json, {
+    List msgAlias = const ["msg"],
+    List codeAlias = const ["code"],
+    List dataAlias = const ["data"],
+  }) {
     for (var alias in (msgAlias ?? [])) {
       if (json[alias] != null) {
         msg = json[alias];
