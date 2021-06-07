@@ -8,9 +8,29 @@ class Result<T> {
 
   Result({this.data, this.code, this.msg});
 
-  Result.fromJson(Map<String, dynamic> json) {
-    msg = json['msg'];
-    code = json['code'];
-    data = JsonConvert.fromJsonAsT(json['data']??{});
+  Result.fromJson(
+      Map<String, dynamic> json, {
+        List msgAlias = const ["msg"],
+        List codeAlias = const ["code"],
+        List dataAlias = const ["data"],
+      }) {
+    for (var alias in (msgAlias ?? [])) {
+      if (json[alias] != null) {
+        msg = json[alias];
+        break;
+      }
+    }
+    for (var alias in (codeAlias ?? [])) {
+      if (json[alias] != null) {
+        code = json[alias];
+        break;
+      }
+    }
+    for (var alias in (dataAlias ?? [])) {
+      if (json[alias] != null) {
+        data = JsonConvert.fromJsonAsT(json[alias]);
+        break;
+      }
+    }
   }
 }
