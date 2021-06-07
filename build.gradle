@@ -61,15 +61,18 @@ intellij {
 patchPluginXml {
     version(pluginVersion + pluginVersionSuffix)
     changeNotes """
-      version 1.0.0 has been released.<br>
+      <b>1.0.6</b>
+      <ul>
+        <li>Fix bug.</li>
+        <li>Support Flutter Module, Package and Plugin project.</li>
+      </ul>
+      <br/>
     """
 }
 
-//export ORG_GRADLE_PROJECT_INTELLIJ_PUBLISH_TOKEN="perm:aV8uNTc=.OTItNDAzOA==.ezl8sjKYkM9RuHfT4UFgj54PJunpHW"
 publishPlugin {
-    channels = 'Stable'
-//    token = "$System.env.ORG_GRADLE_PROJECT_INTELLIJ_PUBLISH_TOKEN"
-    token = "perm:aV8uNTc=.OTItNDAzOA==.ezl8sjKYkM9RuHfT4UFgj54PJunpHW"
+    channels = ['Stable']
+    token = "$System.env.ORG_GRADLE_PROJECT_INTELLIJ_PUBLISH_TOKEN"
 }
 
 def productMatrixFile = "${projectDir.absolutePath}/product-matrix.json"
