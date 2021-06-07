@@ -48,6 +48,24 @@
                              id="preferences.SingleFileExecutionConfigurable"
                              instance="com.ruiyu.setting.SettingComponent"/>
         <notificationGroup id="FlutterGetXStarterNotifier" displayType="BALLOON"/>
+        <!--Live Templates-->
+        <liveTemplateContext implementation="cn.te0.flutter.templates.GetXContext"/>
+        <defaultLiveTemplates file="/liveTemplates/GetX.xml"/>
+        <!--Obx Action-->
+        <intentionAction>
+            <className>cn.te0.flutter.intention.WrapWithObxAction</className>
+            <category>GetX</category>
+        </intentionAction>
+        <!--GetBuilder Action-->
+        <intentionAction>
+            <className>cn.te0.flutter.intention.WrapWithGetBuilderAction</className>
+            <category>GetX</category>
+        </intentionAction>
+        <!--GetX Action-->
+        <intentionAction>
+            <className>cn.te0.flutter.intention.WrapWithGetXAction</className>
+            <category>GetX</category>
+        </intentionAction>
     </extensions>
 
     <actions>
