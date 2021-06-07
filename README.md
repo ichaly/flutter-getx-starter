@@ -10,6 +10,7 @@ What I do is generate dart beans based on json, as well as generics parameters a
 
 
 ### Usage
+![](http://img.te0.cn/tuchuang/20210607170418_zQ7SrR_doc_img_1.jpeg)
 * Search 'Flutter GetX Starter' in Intellij Idea Plugin Repositroy Or AndroidStudio Plugin Repository And Install it.</br>
 * Restart your Develop tools 
 * Press shortcut key `alt ` + `j` for mac  , right click on package -> `New`->`Flutter GetX Starter`　And Then you will know how to use
