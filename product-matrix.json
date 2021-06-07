@@ -25,7 +25,7 @@
   },
   "211.7142.45": {
     "comments": "2021.1.1",
-    "ideaVersion": "211.7142.*",
+    "ideaVersion": "211.*",
     "dartPluginVersion": "211.7233",
     "flutterPluginVersion": "56.0.5",
     "sinceBuild": "203.0",
