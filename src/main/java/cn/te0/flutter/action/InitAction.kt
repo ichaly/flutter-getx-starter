@@ -13,6 +13,7 @@ import com.ruiyu.file.FileHelpers
 import com.ruiyu.utils.showNotify
 import io.flutter.pub.PubRoot
 import java.io.File
+import java.net.URLDecoder
 import java.util.jar.JarFile
 
 class InitAction : AnAction() {
@@ -70,9 +71,11 @@ class InitAction : AnAction() {
                     findChild("app") ?: createChildDirectory(this, "app").run {
                         //添加通用工具类
                         val jf = JarFile(
-                            InitAction::class.java.getResource("/templates")?.file
-                                ?.replace("!/templates", "")
-                                ?.replace("file:", "")
+                            URLDecoder.decode(
+                                InitAction::class.java.getResource("/templates")?.file
+                                    ?.replace("!/templates", "")
+                                    ?.replace("file:", "")
+                            )
                         )
                         for (entry in jf.entries()) {
                             if (!entry.name.startsWith("templates/getx/common/")) {

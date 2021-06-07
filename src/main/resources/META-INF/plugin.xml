@@ -16,12 +16,15 @@
         <li>Right-click the File: -> Flutter GetX Starter</li>
       </ul>
       <br>
-      <p><img src="http://img.te0.cn/tuchuang/20210607170418_zQ7SrR_doc_img_1.jpeg" alt="demo" width="800" height="487"></p>
+      <p><img src="https://img.te0.cn/tuchuang/20210607170418_zQ7SrR_doc_img_1.jpeg" alt="demo" width="800" height="487"></p>
     ]]></description>
 
     <change-notes><![CDATA[
-      <b>1.0.4</b>
+      <b>1.0.6</b>
       <ul>
+        <li>
+          Fix bug.
+        </li>
         <li>
           Support Flutter Module, Package and Plugin project.
         </li>
