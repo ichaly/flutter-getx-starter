@@ -45,19 +45,19 @@ class InitAction : AnAction() {
                     findChild("json") ?: createChildDirectory(this, "json")//Json资源
                     findChild("anim") ?: createChildDirectory(this, "anim")//动画资源
                     findChild("i18n") ?: createChildDirectory(this, "i18n")//国际化资源
-                    //添加常用依赖
-                    YamlHelper.updateYaml(
-                        pubspec.path
-                    ) { map: Map<String?, Any?> ->
-                        (map.get("dependencies") as HashMap<String, Any>).run {
-                            putIfAbsent("get", "^4.1.4")
-                            putIfAbsent("lottie", "^1.0.1")
-                            putIfAbsent("crypto", "^3.0.1")
-                            putIfAbsent("convert", "^3.0.0")
-                            putIfAbsent("fluttertoast", "^8.0.7")
-                            putIfAbsent("flutter_screenutil", "^5.0.0+2")
-                            putIfAbsent("dio_cookie_manager", "^2.0.0")
-                        }
+                }
+                //添加常用依赖
+                YamlHelper.updateYaml(
+                    pubspec.path
+                ) { map: Map<String?, Any?> ->
+                    (map.get("dependencies") as HashMap<String, Any>).run {
+                        putIfAbsent("get", "^4.1.4")
+                        putIfAbsent("lottie", "^1.0.1")
+                        putIfAbsent("crypto", "^3.0.1")
+                        putIfAbsent("convert", "^3.0.0")
+                        putIfAbsent("fluttertoast", "^8.0.7")
+                        putIfAbsent("flutter_screenutil", "^5.0.0+2")
+                        putIfAbsent("dio_cookie_manager", "^2.0.0")
                     }
                 }
                 lib?.run {

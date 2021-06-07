@@ -27,9 +27,9 @@ class Http {
       );
       _dio = new Dio(options);
       //自定义Cookie
-      _dio?.interceptors.add(PrivateCookieManager(CookieJar()));
+      _dio.interceptors.add(PrivateCookieManager(CookieJar()));
       //开启请求日志
-      _dio?.interceptors.add(LogInterceptor(
+      _dio.interceptors.add(LogInterceptor(
         responseBody: true,
         requestBody: true,
         logPrint: (obj) => Logger.debug(obj),
