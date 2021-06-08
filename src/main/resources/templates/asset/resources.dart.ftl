@@ -38,9 +38,11 @@ extension StringExtension on String {
     Key key,
     double width,
     double height,
+    String package = package,
     BoxFit fit = BoxFit.contain,
+    Animation<double> controller,
+    Function(LottieComposition) onLoaded,
     Alignment alignment = Alignment.center,
-    String package = R.package,
   }) {
     return Lottie.asset(
       this,
@@ -49,6 +51,8 @@ extension StringExtension on String {
       height: height,
       fit: fit,
       alignment: alignment,
+      controller: controller,
+      onLoaded: onLoaded,
       package: package,
     );
   }
