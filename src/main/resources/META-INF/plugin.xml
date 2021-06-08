@@ -17,9 +17,10 @@
       </ul>
       <br>
       <p><img src="https://img.te0.cn/tuchuang/20210607170418_zQ7SrR_doc_img_1.jpeg" alt="demo" width="800" height="487"></p>
+      <p><img src="https://img.te0.cn/tuchuang/20210608154057_HvvBnT_WX20210608-154031@2x.jpeg" alt="demo" width="800" height="487"></p>
     ]]></description>
 
-    <change-notes><![CDATA[
+    <change-notes><![CDATA[WrapWithAction.java
       <b>1.0.6</b>
       <ul>
         <li>

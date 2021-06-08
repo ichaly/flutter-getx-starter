@@ -4,7 +4,11 @@ import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.editor.*;
+import com.intellij.openapi.editor.Caret;
+import com.intellij.openapi.editor.CaretModel;
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.editor.VisualPosition;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiDocumentManager;
@@ -55,8 +59,9 @@ public abstract class WrapWithAction extends PsiElementBaseIntentionAction imple
     @Override
     public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element)
         throws IncorrectOperationException {
-        Runnable runnable = () -> invokeSnippetAction(project, editor, snippetType);
-        WriteCommandAction.runWriteCommandAction(project, runnable);
+        WriteCommandAction.runWriteCommandAction(project, () -> {
+            invokeSnippetAction(project, editor, snippetType);
+        });
     }
 
     protected void invokeSnippetAction(@NotNull Project project, Editor editor, SnippetType snippetType) {
@@ -72,9 +77,8 @@ public abstract class WrapWithAction extends PsiElementBaseIntentionAction imple
         final String replaceWith = Snippets.getSnippet(snippetType, selectedText);
         // wrap the widget:
         WriteCommandAction.runWriteCommandAction(project, () -> {
-                document.replaceString(offsetStart, offsetEnd, replaceWith);
-            }
-        );
+            document.replaceString(offsetStart, offsetEnd, replaceWith);
+        });
         // place cursors to specify types:
         final String prefixSelection = Snippets.PREFIX_SELECTION;
         final String[] snippetArr = {Snippets.GETX_SNIPPET_KEY};

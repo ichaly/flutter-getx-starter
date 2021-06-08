@@ -61,10 +61,9 @@ intellij {
 patchPluginXml {
     version(pluginVersion + pluginVersionSuffix)
     changeNotes """
-      <b>1.0.6</b>
+      <b>1.0.7</b>
       <ul>
-        <li>Fix bug.</li>
-        <li>Support Flutter Module, Package and Plugin project.</li>
+        <li>Add snippets and wrap with actions.</li>
       </ul>
       <br/>
     """
@@ -129,8 +128,8 @@ System.out.println("Artifacts output directory: ${rootProject.buildDir}\n")
 
 // Adjust plugin build settings.
 intellij.version = ideaVersion
+intellij.plugins += "Kotlin"
 intellij.plugins += "Dart:${productDetails.dartPluginVersion}"
 intellij.plugins += "io.flutter:${productDetails.flutterPluginVersion}"
-intellij.plugins += "Kotlin"
 patchPluginXml.sinceBuild = productDetails.sinceBuild
 patchPluginXml.untilBuild = productDetails.untilBuild
