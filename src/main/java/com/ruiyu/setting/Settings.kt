@@ -9,11 +9,12 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 data class Settings(
     var modelSuffix: String,
     var isOpenNullSafety: Boolean?,
-    var isOpenNullAble: Boolean?
+    var isOpenNullAble: Boolean?,
+    var isInnerClass: Boolean?
 ) : PersistentStateComponent<Settings> {
 
     constructor() : this(
-        "entity", null, null
+        "entity", null, null,null
     )
 
     override fun getState(): Settings {

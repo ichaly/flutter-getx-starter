@@ -11,6 +11,7 @@ class CollectInfo {
     //用户输入的类名
     var userInputClassName = ""
     var userInputJson = ""
+
     //用户设置的后缀
     fun modelSuffix(): String {
         return ServiceManager.getService(Settings::class.java).state.modelSuffix.toLowerCase()
@@ -23,9 +24,7 @@ class CollectInfo {
         } else {
             (userInputClassName + "_" + modelSuffix().toLowerCaseFirstOne())
         }
-
     }
-
 
     //用户输入的名字转为首个class的名字(文件中的类名)
     fun firstClassName(): String {

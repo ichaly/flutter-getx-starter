@@ -173,18 +173,6 @@ open class JsonInputDialog(
         }
     }
 
-    fun handleFormatJSONString() {
-        val currentText = jsonContentEditor.document.text
-        if (currentText.isNotEmpty()) {
-            try {
-                val jsonElement = prettyGson.fromJson(currentText, JsonElement::class.java)
-                val formatJSON = prettyGson.toJson(jsonElement)
-                jsonContentEditor.document.setText(formatJSON)
-            } catch (e: Exception) {
-            }
-        }
-    }
-
     override fun doOKAction() {
         val collectInfo = CollectInfo().apply {
             userInputClassName = myField.text
@@ -198,6 +186,18 @@ open class JsonInputDialog(
         }
         if (inputModelBlock(collectInfo)) {
             super.doOKAction()
+        }
+    }
+
+    private fun handleFormatJSONString() {
+        val currentText = jsonContentEditor.document.text
+        if (currentText.isNotEmpty()) {
+            try {
+                val jsonElement = prettyGson.fromJson(currentText, JsonElement::class.java)
+                val formatJSON = prettyGson.toJson(jsonElement)
+                jsonContentEditor.document.setText(formatJSON)
+            } catch (e: Exception) {
+            }
         }
     }
 
@@ -277,14 +277,19 @@ fun createLinearLayoutVertical(): JPanel {
 }
 
 fun createCheckBox(): DialogPanel {
+    val listCheckBox = mutableListOf<CellBuilder<JBCheckBox>?>(null, null)
+    val isInnerClass = ServiceManager.getService(Settings::class.java).isInnerClass == true
     val isOpenNullSafety = ServiceManager.getService(Settings::class.java).isOpenNullSafety == true
-    val listCheckBox = mutableListOf<CellBuilder<JBCheckBox>?>(null, null, null)
     return panel {
         row {
+            checkBox("inner-class", isInnerClass).apply {
+                component.addItemListener {
+                    ServiceManager.getService(Settings::class.java).isInnerClass = component.isSelected
+                }
+            }
             checkBoxGroup(null) {
                 listCheckBox[0] =
                     checkBox("null-safety", isOpenNullSafety).apply {
-//                        component.isSelected = true
                         component.addItemListener {
                             listCheckBox[1]?.component?.isVisible = component.isSelected
                             ServiceManager.getService(Settings::class.java).isOpenNullSafety = component.isSelected

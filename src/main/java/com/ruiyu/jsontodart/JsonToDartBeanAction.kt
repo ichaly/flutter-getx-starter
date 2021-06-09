@@ -81,7 +81,6 @@ class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
                         true
                     }
                 }
-
             }.show()
         } catch (e: Exception) {
             project.showNotify(e.message!!)
