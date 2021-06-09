@@ -26,7 +26,6 @@ Quickly generates Dart Model classes from JSON text. <br>
 * Welcome anyone to push a pull request to improve me.
 
 ### Gratitude
-* Thank [@jonataslaw](https://github.com/jonataslaw/getx) 
 * Thank [@CNAD666](https://github.com/CNAD666/getx_template) 
 * Thank [@zhangruiyu](https://github.com/zhangruiyu/FlutterJsonBeanFactory) 
 * Thank [@AndrewShen812](https://github.com/AndrewShen812/AssetsRefGenerator) 
