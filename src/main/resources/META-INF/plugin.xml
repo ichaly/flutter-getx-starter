@@ -4,7 +4,9 @@
     <vendor email="i@eunut.com" url="https://github.com/ichaly">Shi Chaly</vendor>
 
     <description><![CDATA[
-      Flutter GetX Starter is a flutter quick generate code template base on <a href="https://github.com/jonataslaw/getx">GetX</a> for developer.<br>
+      Flutter GetX Starter is quick generate code template base on <a href="https://github.com/jonataslaw/getx">GetX</a> for flutter developer.<br>
+      Makes it easier to use assets in Flutter project. Just like using R.drawable.xxx in Android!<br>
+      Quickly generates Dart Model classes from JSON text. <br>
 
       <h2>Gratitude</h2>
       <a href="https://github.com/CNAD666/getx_template">getx_template</a><br>
