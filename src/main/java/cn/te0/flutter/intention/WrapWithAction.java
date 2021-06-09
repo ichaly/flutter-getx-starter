@@ -45,23 +45,17 @@ public abstract class WrapWithAction extends PsiElementBaseIntentionAction imple
         if (currentFile != null && !currentFile.getName().endsWith(".dart")) {
             return false;
         }
-        if (!psiElement.toString().equals("PsiElement(IDENTIFIER)")) {
+        if (!"PsiElement(IDENTIFIER)".equals(psiElement.toString())) {
             return false;
         }
         callExpressionElement = WrapHelper.callExpressionFinder(psiElement);
-        if (callExpressionElement == null) {
-            return false;
-        }
-        return true;
+        return callExpressionElement != null;
     }
-
 
     @Override
     public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element)
         throws IncorrectOperationException {
-        WriteCommandAction.runWriteCommandAction(project, () -> {
-            invokeSnippetAction(project, editor, snippetType);
-        });
+        ApplicationManager.getApplication().runWriteAction(() -> invokeSnippetAction(project, editor, snippetType));
     }
 
     protected void invokeSnippetAction(@NotNull Project project, Editor editor, SnippetType snippetType) {
@@ -76,9 +70,8 @@ public abstract class WrapWithAction extends PsiElementBaseIntentionAction imple
         final String selectedText = document.getText(TextRange.create(offsetStart, offsetEnd));
         final String replaceWith = Snippets.getSnippet(snippetType, selectedText);
         // wrap the widget:
-        WriteCommandAction.runWriteCommandAction(project, () -> {
-            document.replaceString(offsetStart, offsetEnd, replaceWith);
-        });
+        WriteCommandAction.runWriteCommandAction(project, ()
+            -> document.replaceString(offsetStart, offsetEnd, replaceWith));
         // place cursors to specify types:
         final String prefixSelection = Snippets.PREFIX_SELECTION;
         final String[] snippetArr = {Snippets.GETX_SNIPPET_KEY};
