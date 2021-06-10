@@ -26,7 +26,7 @@ class InitAction : AnAction() {
     }
 
     override fun actionPerformed(e: AnActionEvent) {
-        val project: Project = e.getData(PlatformDataKeys.PROJECT)!!
+        val project: Project = e.project!!
         //判断是否是flutter项目
         if (YamlHelper.shouldActivateFor(project)) {
             generateStructure(project)
