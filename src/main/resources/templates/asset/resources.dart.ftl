@@ -38,7 +38,7 @@ extension StringExtension on String {
     Key key,
     double width,
     double height,
-    String package = package,
+    String package = R.package,
     BoxFit fit = BoxFit.contain,
     Animation<double> controller,
     Function(LottieComposition) onLoaded,
