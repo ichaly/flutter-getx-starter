@@ -61,9 +61,9 @@ intellij {
 patchPluginXml {
     version(pluginVersion + pluginVersionSuffix)
     changeNotes """
-      <b>1.0.7</b>
+      <b>1.0.8</b>
       <ul>
-        <li>Add snippets and wrap with actions.</li>
+        <li>Add more parameters for dart template.</li>
       </ul>
       <br/>
     """
