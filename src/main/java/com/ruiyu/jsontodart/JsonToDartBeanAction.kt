@@ -40,25 +40,18 @@ class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
             is PsiFile -> navigatable.containingDirectory
             else -> {
                 val root = ModuleRootManager.getInstance(module)
-                root.sourceRoots
-                    .asSequence()
-                    .mapNotNull {
-                        PsiManager.getInstance(project).findDirectory(it)
-                    }.firstOrNull()
+                root.sourceRoots.asSequence().mapNotNull {
+                    PsiManager.getInstance(project).findDirectory(it)
+                }.firstOrNull()
             }
         } ?: return
-//        val directoryFactory = PsiDirectoryFactory.getInstance(directory.project)
-//        val packageName = directoryFactory.getQualifiedName(directory, true)
-        val psiFileFactory = PsiFileFactory.getInstance(project)
 
         try {
             JsonInputDialog(project) { collectInfo ->
-                //生成dart文件的内容
-                val generatorClassContent = ModelGenerator(collectInfo, project).generateDartClassesToString()
                 //文件名字
-                //如果包含那么就提示
                 val fileName = collectInfo.transformInputClassNameToFileName()
                 when {
+                    //如果包含那么就提示
                     FileHelpers.containsDirectoryFile(directory, "$fileName.dart") -> {
                         project.showErrorMessage("The $fileName.dart already exists")
                         false
@@ -68,22 +61,22 @@ class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
                         false
                     }
                     else -> {
+                        //生成dart文件的内容
+                        val generatorClassContent = ModelGenerator(collectInfo, project).generateDartClassesToString()
                         generateDartDataClassFile(
                             fileName,
                             generatorClassContent,
                             project,
-                            psiFileFactory,
                             directory,
                         )
-                        val notifyMessage = "Dart Data Class file generated successful"
                         FlutterBeanFactoryAction.generateAllFile(project)
-                        project.showNotify(notifyMessage)
+                        project.showNotify("Dart Data Class file generated successful")
                         true
                     }
                 }
             }.show()
         } catch (e: Exception) {
-            project.showNotify(e.message!!)
+            project.showErrorMessage(e.message!!)
         }
     }
 
@@ -91,37 +84,13 @@ class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
         fileName: String,
         classCodeContent: String,
         project: Project?,
-        psiFileFactory: PsiFileFactory,
         directory: PsiDirectory
     ) {
-
         project.executeCouldRollBackAction {
-
-            val file =
-                psiFileFactory.createFileFromText("$fileName.dart", DartFileType.INSTANCE, classCodeContent) as DartFile
+            val file = PsiFileFactory.getInstance(project).createFileFromText(
+                "$fileName.dart", DartFileType.INSTANCE, classCodeContent
+            ) as DartFile
             directory.add(file)
-            //包名
-//            val packageName = (directory.virtualFile.path + "/$fileName.dart").substringAfter("${project!!.name}/lib/")
-//            生成单个helper
-//            FileHelpers.generateDartEntityHelper(project, "import 'package:${project.name}/${packageName}';", FileHelpers.getDartFileHelperClassGeneratorInfo(file))
-            //此时应该重新生成所有文件
-
         }
     }
-
-    /* private fun changeDartFileNameIfCurrentDirectoryExistTheSameFileNameWithoutSuffix(
-             fileName: String,
-             directory: PsiDirectory
-     ): String {
-         var newFileName = fileName
-         val dartFileSuffix = ".dart"
-         val fileNamesWithoutSuffix =
-                 directory.files.filter { it.name.endsWith(dartFileSuffix) }
-                         .map { it.name.dropLast(dartFileSuffix.length) }
-         while (fileNamesWithoutSuffix.contains(newFileName)) {
-             newFileName += "X"
-         }
-         return newFileName
-     }*/
-
 }

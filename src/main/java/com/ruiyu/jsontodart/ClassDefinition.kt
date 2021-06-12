@@ -63,8 +63,8 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
             val settings = ServiceManager.getService(Settings::class.java)
             val isOpenNullSafety = settings.isOpenNullSafety == true
             val isOpenNullAble = settings.isOpenNullAble == true
-            val prefix = if(isOpenNullSafety && !isOpenNullAble) "late " else ""
-            val suffix = if(isOpenNullSafety && isOpenNullAble) "?" else ""
+            val prefix = if (isOpenNullSafety && !isOpenNullAble) "late " else ""
+            val suffix = if (isOpenNullSafety && isOpenNullAble) "?" else ""
             return fields.keys.map { key ->
                 val f = fields[key]
                 val fieldName = fixFieldName(key, f, privateFields)
