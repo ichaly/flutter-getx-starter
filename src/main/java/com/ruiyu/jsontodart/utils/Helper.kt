@@ -78,7 +78,7 @@ fun isListType(typeName: String): Boolean {
 
 val dartKeyword = mutableListOf(
     "abstract", "dynamic", "implements", "show",
-    "as", "else", "import ", "static",
+    "as", "else", "import", "static",
     "assert", "enum", "in", "super",
     "async", "export", "interface", "switch",
     "await", "external", "is", "sync",

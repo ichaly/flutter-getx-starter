@@ -63,12 +63,7 @@ class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
                     else -> {
                         //生成dart文件的内容
                         val generatorClassContent = ModelGenerator(collectInfo, project).generateDartClassesToString()
-                        generateDartDataClassFile(
-                            fileName,
-                            generatorClassContent,
-                            project,
-                            directory,
-                        )
+                        generateDartDataClassFile(fileName, generatorClassContent, project, directory)
                         FlutterBeanFactoryAction.generateAllFile(project)
                         project.showNotify("Dart Data Class file generated successful")
                         true

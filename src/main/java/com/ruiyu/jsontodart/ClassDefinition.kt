@@ -10,6 +10,7 @@ import com.ruiyu.utils.toUpperCaseFirstOne
 
 class ClassDefinition(private val name: String, private val privateFields: Boolean = false) {
     val fields = mutableMapOf<String, TypeDefinition>()
+
     val dependencies: List<Dependency>
         get() {
             val dependenciesList = mutableListOf<Dependency>()
@@ -20,6 +21,42 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
                 }
             }
             return dependenciesList;
+        }
+
+    //字段的集合
+    val _fieldList: String
+        get() {
+            val settings = ServiceManager.getService(Settings::class.java)
+            val isOpenNullSafety = settings.isOpenNullSafety == true
+            val isOpenNullAble = settings.isOpenNullAble == true
+            val prefix = if (isOpenNullSafety && !isOpenNullAble) "late " else ""
+            val suffix = if (isOpenNullSafety && isOpenNullAble) "?" else ""
+            return fields.keys.map { key ->
+                val f = fields[key]
+                val fieldName = fixFieldName(key, f, privateFields)
+                val sb = StringBuffer();
+                //如果驼峰命名后不一致,才这样
+                if (fieldName != key) {
+                    sb.append('\t')
+                    sb.append("@JSONField(name: \"${key}\")\n")
+                }
+                sb.append('\t')
+                sb.append(prefix)
+                f!!.run {
+                    if (name == "Null") {
+                        sb.append("dynamic")
+                    } else {
+                        sb.append(name)
+                    }
+                    //如果是list,添加范型
+                    if (subtype != null) {
+                        sb.append("<${subtype!!}>")
+                    }
+                }
+                sb.append(suffix)
+                sb.append(" $fieldName;")
+                return sb.toString()
+            }.joinToString("\n")
         }
 
     fun addField(key: String, typeDef: TypeDefinition) {
@@ -44,56 +81,10 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
         return false
     }
 
-    fun _addTypeDef(typeDef: TypeDefinition, sb: StringBuffer) {
-        if (typeDef.name == "Null") {
-            sb.append("dynamic")
-        } else {
-            sb.append(typeDef.name)
-        }
-
-        if (typeDef.subtype != null) {
-            //如果是list,就把名字修改成单数
-            sb.append("<${typeDef.subtype!!}>")
-        }
-    }
-
-    //字段的集合
-    val _fieldList: String
-        get() {
-            val settings = ServiceManager.getService(Settings::class.java)
-            val isOpenNullSafety = settings.isOpenNullSafety == true
-            val isOpenNullAble = settings.isOpenNullAble == true
-            val prefix = if (isOpenNullSafety && !isOpenNullAble) "late " else ""
-            val suffix = if (isOpenNullSafety && isOpenNullAble) "?" else ""
-            return fields.keys.map { key ->
-                val f = fields[key]
-                val fieldName = fixFieldName(key, f, privateFields)
-                val sb = StringBuffer();
-                //如果驼峰命名后不一致,才这样
-                if (fieldName != key) {
-                    sb.append('\t')
-                    sb.append("@JSONField(name: \"${key}\")\n")
-                }
-                sb.append('\t')
-                sb.append(prefix)
-                _addTypeDef(f!!, sb)
-                sb.append(suffix)
-                sb.append(" $fieldName;")
-                return@map sb.toString()
-            }.joinToString("\n")
-        }
-
-
     override fun toString(): String {
-        return if (privateFields) {
-//            "class $name {\n$_fieldList\n\n$_defaultPrivateConstructor\n\n$_gettersSetters\n\n$_jsonParseFunc\n\n$_jsonGenFunc\n}\n";
-            ""
-        } else {
-            "class $name with JsonConvert<${name}> {\n$_fieldList\n}\n";
-        }
+        return "class $name with JsonConvert<${name}> {\n$_fieldList\n}\n"
     }
 }
-
 
 class Dependency(var name: String, var typeDef: TypeDefinition) {
     val className: String
@@ -107,14 +98,13 @@ class Dependency(var name: String, var typeDef: TypeDefinition) {
 }
 
 class TypeDefinition(var name: String, var subtype: String? = null) {
-
+    private val isPrimitiveList: Boolean
 
     val isPrimitive: Boolean = if (subtype == null) {
         isPrimitiveType(name)
     } else {
         isPrimitiveType("$name<${subtype!!.toUpperCaseFirstOne()}>")
     }
-    private val isPrimitiveList: Boolean
 
     companion object {
         fun fromDynamic(obj: Any?): TypeDefinition {
@@ -137,14 +127,12 @@ class TypeDefinition(var name: String, var subtype: String? = null) {
         isPrimitiveList = isPrimitive && name == "List"
     }
 
-
     override operator fun equals(other: Any?): Boolean {
         if (other is TypeDefinition) {
             return name == other.name && subtype == other.subtype;
         }
         return false;
     }
-
 
     override fun hashCode(): Int {
         var result = name.hashCode()
@@ -157,6 +145,4 @@ class TypeDefinition(var name: String, var subtype: String? = null) {
     override fun toString(): String {
         return "TypeDefinition(name='$name', subtype=$subtype, isPrimitive=$isPrimitive, isPrimitiveList=$isPrimitiveList)"
     }
-
-
 }

@@ -75,34 +75,23 @@ class ModelGenerator(
     }
 
     fun generateDartClassesToString(): String {
-        //用阿里的防止int变为double 已解决 还是用google的吧 https://www.codercto.com/a/73857.html
-//        val jsonRawData = JSON.parseObject(collectInfo.userInputJson)
         val originalStr = collectInfo.userInputJson.trim()
-        val gson = GsonBuilder()
-            .registerTypeAdapter(object : TypeToken<Map<String, Any>>() {}.type, MapTypeAdapter()).create()
-
-        val jsonRawData = if (originalStr.startsWith("[")) {
-            val list: List<Any> = gson.fromJson(originalStr, object : TypeToken<List<Any>>() {}.type)
-            try {
+        val gson = GsonBuilder().registerTypeAdapter(
+            object : TypeToken<Map<String, Any>>() {}.type, MapTypeAdapter()
+        ).create()
+        val jsonRawData = try {
+            if (originalStr.startsWith("[")) {
+                val list: List<Any> = gson.fromJson(originalStr, object : TypeToken<List<Any>>() {}.type)
                 (JsonUtils.jsonMapMCompletion(list) as List<*>).first()
-            } catch (e: Exception) {
-                mutableMapOf<String, Any>()
+            } else {
+                gson.fromJson<Map<String, Any>>(originalStr, object : TypeToken<Map<String, Any>>() {}.type)
             }
-
-        } else {
-            gson.fromJson<Map<String, Any>>(originalStr, object : TypeToken<Map<String, Any>>() {}.type)
+        } catch (e: Exception) {
+            mutableMapOf<String, Any>()
         }
-//        val jsonRawData = gson.fromJson<Map<String, Any>>(collectInfo.userInputJson, HashMap::class.java)
         val pubSpecConfig = YamlHelper.getPubSpecConfig(project)
-        val classContentList = generateClassDefinition(
-            collectInfo.firstClassName(), "", JsonUtils.jsonMapMCompletion(jsonRawData)
-                ?: mutableMapOf<String, Any>()
-        )
+        val classContentList = generateClassDefinition(collectInfo.firstClassName(), "", jsonRawData!!)
         val classContent = classContentList.joinToString("\n")
-        classContentList.fold(mutableListOf<TypeDefinition>(), { acc, de ->
-            acc.addAll(de.fields.map { it.value })
-            acc
-        })
         val stringBuilder = StringBuilder()
         //导包
         stringBuilder.append("import 'package:${pubSpecConfig?.name}/gen/json/base/json_convert_content.dart';")
@@ -114,11 +103,7 @@ class ModelGenerator(
         }
         stringBuilder.append("\n")
         stringBuilder.append(classContent)
-        //生成helper类
-
         //生成
         return stringBuilder.toString()
     }
-
-
 }
