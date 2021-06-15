@@ -33,8 +33,7 @@ public class GsonUtil {
      * @return
      */
     public static <T> T fromJsonDefault(String json, TypeToken<T> typeToken) {
-        Gson gson = new Gson();
-        return gson.fromJson(json, typeToken.getType());
+        return new Gson().fromJson(json, typeToken.getType());
     }
 
     /**
@@ -45,16 +44,14 @@ public class GsonUtil {
      * @return
      */
     public static <T> T fromJson(String json, TypeToken<T> typeToken) {
-
         Gson gson = new GsonBuilder()
-                /**
-                 * 重写map的反序列化
-                 */
-                .registerTypeAdapter(new TypeToken<Map<String, Object>>() {
-                }.getType(), new MapTypeAdapter()).create();
+            /**
+             * 重写map的反序列化
+             */
+            .registerTypeAdapter(new TypeToken<Map<String, Object>>() {
+            }.getType(), new MapTypeAdapter()).create();
 
         return gson.fromJson(json, typeToken.getType());
-
     }
 
     /**
@@ -65,12 +62,8 @@ public class GsonUtil {
      * @return
      */
     public static <T> T fromJson(String json, Class<T> cls) {
-
-        Gson gson = new GsonBuilder().setDateFormat(DATEFORMAT_default)
-                .create();
-
+        Gson gson = new GsonBuilder().setDateFormat(DATEFORMAT_default).create();
         return gson.fromJson(json, cls);
-
     }
 
     /**
@@ -101,7 +94,6 @@ public class GsonUtil {
     }
 
     public static class MapTypeAdapter extends TypeAdapter<Object> {
-
         @Override
         public Object read(JsonReader in) throws IOException {
             JsonToken token = in.peek();
@@ -114,7 +106,6 @@ public class GsonUtil {
                     }
                     in.endArray();
                     return list;
-
                 case BEGIN_OBJECT:
                     Map<String, Object> map = new LinkedTreeMap<String, Object>();
                     in.beginObject();
@@ -123,10 +114,20 @@ public class GsonUtil {
                     }
                     in.endObject();
                     return map;
-
-                case STRING:
-                    return in.nextString();
-
+                case STRING: {
+                    String originalStr = in.nextString();
+                    try {
+                        if (originalStr.startsWith("[")) {
+                            return GsonUtil.fromJson(originalStr, new TypeToken<List<Map<String, Object>>>() {
+                            });
+                        } else if (originalStr.startsWith("{")) {
+                            return GsonUtil.fromJson(originalStr, new TypeToken<Map<String, Object>>() {
+                            });
+                        }
+                    } catch (Exception ignored) {
+                    }
+                    return originalStr;
+                }
                 case NUMBER:
                     /**
                      * 改写数字的处理逻辑，将数字值分为整型与浮点型。
@@ -139,14 +140,11 @@ public class GsonUtil {
                         //返回double类型代表是double类型
                         return 0.0;
                     }
-
                 case BOOLEAN:
                     return in.nextBoolean();
-
                 case NULL:
                     in.nextNull();
                     return null;
-
                 default:
                     throw new IllegalStateException();
             }
@@ -156,6 +154,5 @@ public class GsonUtil {
         public void write(JsonWriter out, Object value) throws IOException {
             // 序列化无需实现
         }
-
     }
 }

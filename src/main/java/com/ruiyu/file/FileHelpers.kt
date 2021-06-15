@@ -116,9 +116,9 @@ object FileHelpers {
 //        val pubSpecConfig = getPubSpecConfig(project)
         val content = StringBuilder()
         //导包
+        content.append("import 'dart:convert';\n")
         //辅助主类的包名
-        content.append(packageName)
-        content.append("\n")
+        content.append(packageName).append("\n")
         //所有字段
        /* val allFields = helperClassGeneratorInfos?.classes?.flatMap {
             it.fields.mapNotNull { itemFiled ->
