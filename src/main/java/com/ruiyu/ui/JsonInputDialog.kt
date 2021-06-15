@@ -190,13 +190,15 @@ open class JsonInputDialog(
     }
 
     private fun handleFormatJSONString() {
-        val currentText = jsonContentEditor.document.text
-        if (currentText.isNotEmpty()) {
-            try {
-                val jsonElement = prettyGson.fromJson(currentText, JsonElement::class.java)
-                val formatJSON = prettyGson.toJson(jsonElement)
-                jsonContentEditor.document.setText(formatJSON)
-            } catch (e: Exception) {
+        ApplicationManager.getApplication().runWriteAction {
+            val currentText = jsonContentEditor.document.text
+            if (currentText.isNotEmpty()) {
+                try {
+                    val jsonElement = prettyGson.fromJson(currentText, JsonElement::class.java)
+                    val formatJSON = prettyGson.toJson(jsonElement)
+                    jsonContentEditor.document.setText(formatJSON)
+                } catch (e: Exception) {
+                }
             }
         }
     }

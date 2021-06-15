@@ -61,6 +61,11 @@ intellij {
 patchPluginXml {
     version(pluginVersion + pluginVersionSuffix)
     changeNotes """
+      <b>1.0.10</b>
+      <ul>
+        <li>Json to dart bean support whether inner class.</li>
+      </ul>
+      <br/>
       <b>1.0.9</b>
       <ul>
         <li>Add more parameters for dart template.</li>

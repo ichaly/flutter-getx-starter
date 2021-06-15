@@ -76,6 +76,12 @@
         <action id="cn.te0.flutter.New" class="cn.te0.flutter.action.GroupAction">
             <add-to-group group-id="ProjectViewPopupMenu" anchor="after" relative-to-action="WeighingNewGroup"/>
         </action>
+        <action id="FlutterBeanFactory.ID" class="com.ruiyu.beanfactory.FlutterBeanFactoryAction"
+                text="FlutterBeanFactory"
+                description="Dart files ending in entity generate dart bean factory for use">
+            <add-to-group group-id="BuildMenu" anchor="first"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="alt j"/>
+        </action>
         <action id="cn.te0.flutter.Asset"
                 class="cn.te0.flutter.action.AssetAction"
                 text="Generate Flutter Assets Reference"

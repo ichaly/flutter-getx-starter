@@ -8,7 +8,7 @@ import com.ruiyu.jsontodart.utils.isPrimitiveType
 import com.ruiyu.setting.Settings
 import com.ruiyu.utils.toUpperCaseFirstOne
 
-class ClassDefinition(private val name: String, private val privateFields: Boolean = false) {
+class ClassDefinition(val name: String, private val privateFields: Boolean = false) {
     val fields = mutableMapOf<String, TypeDefinition>()
 
     val dependencies: List<Dependency>
@@ -55,7 +55,7 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
                 }
                 sb.append(suffix)
                 sb.append(" $fieldName;")
-                return sb.toString()
+                return@map sb.toString()
             }.joinToString("\n")
         }
 

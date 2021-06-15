@@ -4,6 +4,7 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.LangDataKeys
 import com.intellij.openapi.actionSystem.PlatformDataKeys
+import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.psi.PsiDirectory
@@ -14,10 +15,10 @@ import com.jetbrains.lang.dart.DartFileType
 import com.jetbrains.lang.dart.psi.DartFile
 import com.ruiyu.beanfactory.FlutterBeanFactoryAction
 import com.ruiyu.file.FileHelpers
+import com.ruiyu.helper.YamlHelper
+import com.ruiyu.setting.Settings
 import com.ruiyu.ui.JsonInputDialog
-import com.ruiyu.utils.executeCouldRollBackAction
-import com.ruiyu.utils.showErrorMessage
-import com.ruiyu.utils.showNotify
+import com.ruiyu.utils.*
 
 class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
 
@@ -45,47 +46,87 @@ class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
                 }.firstOrNull()
             }
         } ?: return
-
         try {
             JsonInputDialog(project) { collectInfo ->
-                //文件名字
-                val fileName = collectInfo.transformInputClassNameToFileName()
-                when {
-                    //如果包含那么就提示
-                    FileHelpers.containsDirectoryFile(directory, "$fileName.dart") -> {
+                //生成dart文件的内容
+                val classes = ModelGenerator(collectInfo, project).generateDartClasses()
+                //用户设置的后缀
+                val suffix = ServiceManager.getService(Settings::class.java).state.modelSuffix.toLowerCase()
+                //文件是否存在的校验,如果包含那么就提示
+                for (clazz in classes) {
+                    val fileName = generateDartClassFileName(clazz.name)
+                    if (FileHelpers.containsDirectoryFile(directory, "$fileName.dart")) {
                         project.showErrorMessage("The $fileName.dart already exists")
-                        false
+                        return@JsonInputDialog false
                     }
-                    FileHelpers.containsProjectFile(project, "$fileName.dart") -> {
+                    if (FileHelpers.containsProjectFile(project, "$fileName.dart")) {
                         project.showErrorMessage("$fileName.dart already exists in other package")
-                        false
-                    }
-                    else -> {
-                        //生成dart文件的内容
-                        val generatorClassContent = ModelGenerator(collectInfo, project).generateDartClassesToString()
-                        generateDartDataClassFile(fileName, generatorClassContent, project, directory)
-                        FlutterBeanFactoryAction.generateAllFile(project)
-                        project.showNotify("Dart Data Class file generated successful")
-                        true
+                        return@JsonInputDialog false
                     }
                 }
+                //文件生成
+                val isInnerClass = ServiceManager.getService(Settings::class.java).isInnerClass == true
+                for (clazz in classes) {
+                    val classContent = if (isInnerClass) classes.joinToString("\n") else clazz.toString()
+                    val dependencies: List<Dependency> = if (isInnerClass) listOf() else clazz.dependencies
+                    if (!generateDartClassFile(clazz.name, classContent, project, directory, dependencies)) {
+                        return@JsonInputDialog false
+                    }
+                    //如果是内部类则循环一次就够了
+                    if (isInnerClass) {
+                        break
+                    }
+                }
+                //生成helper辅助类
+                FlutterBeanFactoryAction.generateAllFile(project)
+                project.showNotify("Dart Data Class file generated successful")
+                true
             }.show()
         } catch (e: Exception) {
             project.showErrorMessage(e.message!!)
         }
     }
 
-    private fun generateDartDataClassFile(
-        fileName: String,
-        classCodeContent: String,
-        project: Project?,
-        directory: PsiDirectory
-    ) {
+    private fun generateDartClassFileName(className: String): String {
+        //用户设置的后缀
+        val suffix = ServiceManager.getService(Settings::class.java).state.modelSuffix.toLowerCase()
+        return if (!className.contains("_")) {
+            (className + suffix.toUpperCaseFirstOne()).upperCharToUnderLine()
+        } else {
+            (className + "_" + suffix)
+        }
+    }
+
+    private fun generateDartClassFile(
+        className: String,
+        classContent: String,
+        project: Project,
+        directory: PsiDirectory,
+        dependencies: List<Dependency> = listOf()
+    ): Boolean {
+        val fileName = generateDartClassFileName(className)
+        val sb = StringBuilder()
+        val pubSpecConfig = YamlHelper.getPubSpecConfig(project)
+        //导包
+        sb.append("import 'package:${pubSpecConfig?.name}/gen/json/base/json_convert_content.dart';").append("\n")
+        //说明需要导包json_field.dart
+        if (classContent.contains("@JSONField(")) {
+            sb.append("import 'package:${pubSpecConfig?.name}/gen/json/base/json_field.dart';").append("\n")
+        }
+        //导入依赖包
+        for (dependency in dependencies) {
+            val packageName: String = directory.virtualFile.path.substringAfter("${project.name}/lib/")
+            sb.append("import 'package:${pubSpecConfig?.name}/$packageName/")
+                .append(generateDartClassFileName(dependency.className)).append(".dart';").append("\n")
+        }
+        sb.append("\n").append(classContent)
+        //生成文件
         project.executeCouldRollBackAction {
             val file = PsiFileFactory.getInstance(project).createFileFromText(
-                "$fileName.dart", DartFileType.INSTANCE, classCodeContent
+                "$fileName.dart", DartFileType.INSTANCE, sb.toString()
             ) as DartFile
             directory.add(file)
         }
+        return true
     }
 }

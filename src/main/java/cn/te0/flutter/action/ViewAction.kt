@@ -14,8 +14,7 @@ class ViewAction : AnAction() {
     override fun actionPerformed(event: AnActionEvent) {
         val basePath: PsiElement? = event.getData(PlatformDataKeys.PSI_ELEMENT)
         NewWidgetDialog(
-            event.project!!,
-            basePath.toString().split(":".toRegex()).toTypedArray()[1]
+            event.project!!, basePath.toString().split(":".toRegex()).toTypedArray()[1]
         ).show()
     }
 }
