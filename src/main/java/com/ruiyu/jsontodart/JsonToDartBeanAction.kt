@@ -50,25 +50,13 @@ class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
             JsonInputDialog(project) { collectInfo ->
                 //生成dart文件的内容
                 val classes = ModelGenerator(collectInfo, project).generateDartClasses()
-                //文件是否存在的校验,如果包含那么就提示
-                for (clazz in classes) {
-                    val fileName = generateDartClassFileName(clazz.name)
-                    if (FileHelpers.containsDirectoryFile(directory, "$fileName.dart")) {
-                        project.showErrorMessage("The $fileName.dart already exists")
-                        return@JsonInputDialog false
-                    }
-                    if (FileHelpers.containsProjectFile(project, "$fileName.dart")) {
-                        project.showErrorMessage("$fileName.dart already exists in other package")
-                        return@JsonInputDialog false
-                    }
-                }
                 //文件生成
                 val isInnerClass = ServiceManager.getService(Settings::class.java).isInnerClass == true
                 for (clazz in classes) {
                     val classContent = if (isInnerClass) classes.joinToString("\n") else clazz.toString()
                     val dependencies: List<Dependency> = if (isInnerClass) listOf() else clazz.dependencies
                     if (!generateDartClassFile(clazz.name, classContent, project, directory, dependencies)) {
-                        return@JsonInputDialog false
+//                        return@JsonInputDialog false
                     }
                     //如果是内部类则循环一次就够了
                     if (isInnerClass) {
@@ -103,6 +91,15 @@ class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
         dependencies: List<Dependency> = listOf()
     ): Boolean {
         val fileName = generateDartClassFileName(className)
+        //文件是否存在的校验,如果包含那么就提示
+        if (FileHelpers.containsDirectoryFile(directory, "$fileName.dart")) {
+            project.showErrorMessage("The $fileName.dart already exists")
+            return false
+        }
+        if (FileHelpers.containsProjectFile(project, "$fileName.dart")) {
+            project.showErrorMessage("$fileName.dart already exists in other package")
+            return false
+        }
         val sb = StringBuilder()
         val pubSpecConfig = YamlHelper.getPubSpecConfig(project)
         //导包
