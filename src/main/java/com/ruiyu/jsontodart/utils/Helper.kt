@@ -49,6 +49,7 @@ fun getListSubType(typeName: String): String {
         "List<Null>" to "dynamic"
     )[newTypeName] ?: newTypeName.substringAfter("<").substringBefore(">")
 }
+
 fun getListSubTypeCanNull(typeName: String): String {
     return mapOf(
         "List<num?>" to "num",

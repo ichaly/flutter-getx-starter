@@ -103,7 +103,8 @@ class TypeDefinition(var name: String, var subtype: String? = null) {
     val isPrimitive: Boolean = if (subtype == null) {
         isPrimitiveType(name)
     } else {
-        isPrimitiveType("$name<${subtype!!.toUpperCaseFirstOne()}>")
+        (isPrimitiveType("$name<$subtype>")
+                || isPrimitiveType("$name<${subtype!!.toUpperCaseFirstOne()}>"))
     }
 
     companion object {

@@ -50,8 +50,6 @@ class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
             JsonInputDialog(project) { collectInfo ->
                 //生成dart文件的内容
                 val classes = ModelGenerator(collectInfo, project).generateDartClasses()
-                //用户设置的后缀
-                val suffix = ServiceManager.getService(Settings::class.java).state.modelSuffix.toLowerCase()
                 //文件是否存在的校验,如果包含那么就提示
                 for (clazz in classes) {
                     val fileName = generateDartClassFileName(clazz.name)

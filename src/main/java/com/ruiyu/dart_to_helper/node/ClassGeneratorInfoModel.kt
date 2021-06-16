@@ -56,7 +56,7 @@ class HelperClassGeneratorInfo {
     }
 
     private fun jsonParseExpression(filed: Filed): String {
-        val type = filed.type.replace("?","")
+        val type = filed.type.replace("?", "")
         val name = filed.name
         //从json里取值的名称
         val getJsonName = filed.getValueByName("name") ?: name
@@ -68,23 +68,20 @@ class HelperClassGeneratorInfo {
                 when {
                     isListType -> {
                         "if (json['$getJsonName'] != null) {\n" +
-                                "\t\tdata.$name = (json['$getJsonName'] as List).map((v) => ${
-                                    buildToType(
-                                        getListSubType(type),
-                                        "v"
-                                    )
-                                }).toList().cast<${getListSubType(type)}>();\n" +
-                                "\t}"
+                                "\t\tvar _json = json['$getJsonName'];\n" +
+                                "\t\ttry {\n" +
+                                "\t\t\t\t_json = jsonDecode(json['$getJsonName']);\n" +
+                                "\t\t} catch (e) {}\n" +
+                                "\t\tdata.$name = (_json as List).map((v) => ${
+                                    buildToType(getListSubType(type), "v")
+                                }).toList().cast<${getListSubType(type)}>();\n\t}"
                     }
                     type == "DateTime" -> {
                         "if(json['$getJsonName'] != null){\n\t\tdata.$name = DateTime.parse(json['$getJsonName']);\n\t}"
                     }
                     else -> {
                         "if (json['$getJsonName'] != null) {\n\t\tdata.$name = ${
-                            buildToType(
-                                type,
-                                "json['$getJsonName']"
-                            )
+                            buildToType(type, "json['$getJsonName']")
                         };\n\t}"
                     }
                 }
@@ -93,20 +90,20 @@ class HelperClassGeneratorInfo {
                 //类名
                 val listSubType = getListSubType(type)
                 "if (json['$getJsonName'] != null) {\n" +
-                        "\t\tvar _json = json['$getJsonName'];\n"+
-                        "\t\ttry {\n"+
-                        "\t\t\t\t_json = jsonDecode(json['$getJsonName']);\n"+
-                        "\t\t} catch (e) {}\n"+
+                        "\t\tvar _json = json['$getJsonName'];\n" +
+                        "\t\ttry {\n" +
+                        "\t\t\t\t_json = jsonDecode(json['$getJsonName']);\n" +
+                        "\t\t} catch (e) {}\n" +
                         "\t\tdata.$name = (_json as List).map((v) => ${listSubType}().fromJson(v)).toList();\n" +
                         "\t}"
             }
             else -> // class
                 "if (json['$getJsonName'] != null) {\n" +
-                        "\t\tvar _json = json['$getJsonName'];\n"+
-                        "\t\ttry {\n"+
-                        "\t\t\t\t_json = jsonDecode(json['$getJsonName']);\n"+
-                        "\t\t} catch (e) {}\n"+
-                        "\t\tdata.$name = ${type.replace("?","")}().fromJson(_json);\n" +
+                        "\t\tvar _json = json['$getJsonName'];\n" +
+                        "\t\ttry {\n" +
+                        "\t\t\t\t_json = jsonDecode(json['$getJsonName']);\n" +
+                        "\t\t} catch (e) {}\n" +
+                        "\t\tdata.$name = ${type.replace("?", "")}().fromJson(_json);\n" +
                         "\t}"
         }
     }
