@@ -6,7 +6,6 @@ import cn.te0.flutter.helper.ViewHelper
 import cn.te0.flutter.helper.YamlHelper
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.ruiyu.file.FileHelpers
@@ -14,6 +13,7 @@ import com.ruiyu.utils.showNotify
 import io.flutter.pub.PubRoot
 import java.io.File
 import java.net.URLDecoder
+import java.nio.charset.Charset
 import java.util.jar.JarFile
 
 class InitAction : AnAction() {
@@ -74,7 +74,8 @@ class InitAction : AnAction() {
                             URLDecoder.decode(
                                 InitAction::class.java.getResource("/templates")?.file
                                     ?.replace("!/templates", "")
-                                    ?.replace("file:", "")
+                                    ?.replace("file:", ""),
+                                Charset.defaultCharset()
                             )
                         )
                         for (entry in jf.entries()) {
