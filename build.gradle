@@ -61,6 +61,16 @@ intellij {
 patchPluginXml {
     version(pluginVersion + pluginVersionSuffix)
     changeNotes """
+      <b>1.0.14</b>
+      <ul>
+        <li>Add SVG support.</li>
+      </ul>
+      <br/>
+      <b>1.0.13</b>
+      <ul>
+        <li>Fix resources no package can't load image.</li>
+      </ul>
+      <br/>
       <b>1.0.12</b>
       <ul>
         <li>Fix List<dynamic> has a don't exist import.</li>

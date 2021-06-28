@@ -59,6 +59,7 @@ class InitAction : AnAction() {
                         putIfAbsent("fluttertoast", "^8.0.7")
                         putIfAbsent("flutter_screenutil", "^5.0.0+2")
                         putIfAbsent("dio_cookie_manager", "^2.0.0")
+                        putIfAbsent("flutter_svg", "^0.22.0")
                     }
                 }
                 lib?.run {
