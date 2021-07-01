@@ -7,8 +7,8 @@ plugins {
 group 'cn.te0.flutter-getx-starter'
 
 repositories {
-    mavenCentral()
     maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }
+    mavenCentral()
 }
 
 dependencies {
@@ -64,6 +64,9 @@ publishPlugin {
     channels = ['Stable']
     token = "$System.env.ORG_GRADLE_PROJECT_INTELLIJ_PUBLISH_TOKEN"
 }
+
+sourceCompatibility = '11'
+targetCompatibility = '11'
 
 def productMatrixFile = "${projectDir.absolutePath}/product-matrix.json"
 def jsonFile = new File(productMatrixFile)

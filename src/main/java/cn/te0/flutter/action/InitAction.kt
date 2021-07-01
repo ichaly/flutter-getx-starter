@@ -76,7 +76,7 @@ class InitAction : AnAction() {
                                 InitAction::class.java.getResource("/templates")?.file
                                     ?.replace("!/templates", "")
                                     ?.replace("file:", ""),
-                                Charset.defaultCharset()
+                                Charset.defaultCharset().name()
                             )
                         )
                         for (entry in jf.entries()) {
