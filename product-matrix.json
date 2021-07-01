@@ -23,11 +23,11 @@
     "sinceBuild": "201.0",
     "untilBuild": "203.*"
   },
-  "211.7142.45": {
-    "comments": "2021.1.1",
+  "211.7628.21": {
+    "comments": "2021.1.3",
     "ideaVersion": "211.*",
-    "dartPluginVersion": "211.7233",
-    "flutterPluginVersion": "56.0.5",
+    "dartPluginVersion": "211.7665",
+    "flutterPluginVersion": "57.0.5",
     "sinceBuild": "203.0",
     "untilBuild": "211.*"
   }

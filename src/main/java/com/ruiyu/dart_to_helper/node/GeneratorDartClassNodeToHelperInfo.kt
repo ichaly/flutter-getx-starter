@@ -4,7 +4,6 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.source.tree.CompositeElement
 import com.jetbrains.lang.dart.DartElementType
 import com.jetbrains.lang.dart.DartTokenTypes
-import org.jetbrains.kotlin.psi.psiUtil.children
 
 object GeneratorDartClassNodeToHelperInfo {
     val notSupportType = listOf("static", "const")

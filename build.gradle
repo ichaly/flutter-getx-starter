@@ -1,33 +1,10 @@
-buildscript {
-    ext.kotlin_version = '1.5.20'
-
-    repositories {
-        maven { url 'https://dl.bintray.com/jetbrains/intellij-plugin-service' }
-        mavenLocal()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
-}
-
 plugins {
     id 'java'
-    id 'org.jetbrains.intellij' version '0.7.3'
-    id 'org.jetbrains.kotlin.jvm' version "$kotlin_version"
+    id 'org.jetbrains.intellij' version '1.1'
+    id 'org.jetbrains.kotlin.jvm' version "1.5.20"
 }
 
 group 'cn.te0.flutter-getx-starter'
-
-def pluginVersionSuffix = ''
-
-// must!!!
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-}
 
 repositories {
     mavenCentral()
@@ -35,7 +12,8 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib'
+
     implementation 'org.freemarker:freemarker:2.3.31'
     implementation 'org.yaml:snakeyaml:1.28'
 
@@ -46,21 +24,9 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 }
 
-// See https://github.com/JetBrains/gradle-intellij-plugin/
-intellij {
-    version '2021.1'
-    updateSinceUntilBuild false
-
-    def requiredPlugins = ['yaml']
-    if (ideaVersionPrefix != '' && ideaVersionPrefix.toInteger() >= 192) {
-        requiredPlugins.add('java')
-    }
-    plugins = requiredPlugins
-}
-
 patchPluginXml {
-    version(pluginVersion + pluginVersionSuffix)
-    changeNotes """
+    version = pluginVersion
+    changeNotes = """
       <b>1.0.14</b>
       <ul>
         <li>Add SVG support.</li>
@@ -102,15 +68,12 @@ publishPlugin {
 def productMatrixFile = "${projectDir.absolutePath}/product-matrix.json"
 def jsonFile = new File(productMatrixFile)
 if (jsonFile == null) {
-    // noinspection GroovyAssignabilityCheck
     throw new GradleException("Unable to read $productMatrixFile, is it missing?")
 }
 
 // Fail if the product details file isn't found.
-// noinspection UnnecessaryQualifiedReference
 def productMatrix = new groovy.json.JsonSlurper().parseText(jsonFile.text)
 if (productMatrix == null || !(productMatrix instanceof Map)) {
-    // noinspection GroovyAssignabilityCheck
     throw new GradleException("Unable to read $productMatrixFile.")
 }
 
@@ -141,8 +104,19 @@ if (productDetails == null || !(productDetails instanceof Map)) {
 // Adjust plugin's output file name.
 rootProject.setBuildDir("${rootProject.buildDir}/${productDetails.comments}")
 
+// Adjust plugin build settings.
+// See https://github.com/JetBrains/gradle-intellij-plugin/
+intellij.version = ideaVersion
+intellij.plugins = [
+    "Kotlin",
+    "Dart:${productDetails.dartPluginVersion}",
+    "io.flutter:${productDetails.flutterPluginVersion}",
+]
+patchPluginXml.sinceBuild = productDetails.sinceBuild
+patchPluginXml.untilBuild = productDetails.untilBuild
+
 System.out.println(
-        "\nBuilding plugin ${(pluginVersion + pluginVersionSuffix)} for IDEA " +
+        "\nBuilding plugin ${(pluginVersion)} for IDEA " +
                 "version $ideaVersion (branch ${productDetails.comments})\n"
 )
 System.out.println("Since: ${productDetails.sinceBuild}")
@@ -150,11 +124,3 @@ System.out.println("Until: ${productDetails.untilBuild}")
 System.out.println("Dart: ${productDetails.dartPluginVersion}")
 System.out.println("Flutter: ${productDetails.flutterPluginVersion}\n")
 System.out.println("Artifacts output directory: ${rootProject.buildDir}\n")
-
-// Adjust plugin build settings.
-intellij.version = ideaVersion
-intellij.plugins += "Kotlin"
-intellij.plugins += "Dart:${productDetails.dartPluginVersion}"
-intellij.plugins += "io.flutter:${productDetails.flutterPluginVersion}"
-patchPluginXml.sinceBuild = productDetails.sinceBuild
-patchPluginXml.untilBuild = productDetails.untilBuild
