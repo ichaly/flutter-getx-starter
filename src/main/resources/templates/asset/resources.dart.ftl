@@ -74,9 +74,7 @@ extension StringExtension on String {
       package: package,
     );
   }
-}
 
-extension NumExtension on num {
   Icon toIcon({
     Key key,
     double size,
@@ -86,7 +84,7 @@ extension NumExtension on num {
   }) {
     return Icon(
       IconData(
-        this,
+        int.parse(this),
         fontFamily: family,
         fontPackage: package,
       ),

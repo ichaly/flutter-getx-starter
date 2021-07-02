@@ -6,9 +6,11 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
+import com.google.gson.reflect.TypeToken;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
@@ -16,11 +18,15 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectUtil;
 import com.ruiyu.file.FileHelpers;
 import com.ruiyu.utils.ExtensionsKt;
+import com.ruiyu.utils.GsonUtil;
 import io.flutter.pub.PubRoot;
+import lombok.SneakyThrows;
+import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jsoup.internal.StringUtil;
 
 import java.io.File;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -94,6 +100,7 @@ public class AssetAction extends AnAction {
         });
     }
 
+    @SneakyThrows
     public void updateDart() {
         Table<String, String, String> tables = TreeBasedTable.create();
         Set<String> files = assets.keySet();
@@ -118,9 +125,25 @@ public class AssetAction extends AnAction {
         if (!file.exists()) {
             file.mkdirs();
         }
+        //处理iconfont图标
+        Map<String, Map<String, String>> res = tables.rowMap();
+        Map<String, String> icons = new HashMap<>();
+        Map<String,String> icon = res.remove("icon");
+        for (Map.Entry<String, String> entry : icon.entrySet()) {
+            String json = FileUtils.readFileToString(new File(base.replace(ASSETS_ROOT, "") + entry.getValue()), Charset.defaultCharset());
+            Map<String, Object> map = GsonUtil.fromJson(json, new TypeToken<>() {
+            });
+            List<Map<String, Object>> list = (List<Map<String, Object>>) map.get("glyphs");
+            for (Map<String, Object> m : list) {
+                icons.put(String.format("%s_%s", entry.getKey(), m.get("font_class")), String.format("0x%s", m.get("unicode")));
+            }
+        }
+        res = Maps.newHashMap(res);
+        res.put("icon", icons);
+        //准备生成模板
         Map<String, Object> map = new HashMap();
         map.put("packageName", name);
-        map.put("res", tables.rowMap());
+        map.put("res", res);
         TemplateHelper.getInstance().generator(
             "asset/resources.dart.ftl", file.getAbsolutePath() + "/resources.dart", map
         );
