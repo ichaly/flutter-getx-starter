@@ -123,6 +123,7 @@ public class AssetAction extends AnAction {
         TemplateHelper.getInstance().generator(
             "asset/resources.dart.ftl", file.getAbsolutePath() + "/resources.dart", map
         );
+        Objects.requireNonNull(ProjectUtil.guessProjectDir(project)).refresh(false, true);
         ExtensionsKt.showNotify(project, "Assets reference has been updated successfully.");
     }
 }
