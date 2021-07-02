@@ -32,6 +32,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -95,8 +96,24 @@ public class AssetAction extends AnAction {
     public void updateYaml() {
         List<String> paths = assets.values().stream().distinct().filter(item -> !variant.contains(item)).sorted().map(s -> "assets" + s + "/").collect(Collectors.toList());
         String yamlFile = Objects.requireNonNull(PubRoot.forFile(FileHelpers.getProjectIdeaFile(project))).getPubspec().getPath();
+        List<Map<String, Object>> fonts = assets.keys().stream().filter(item -> item.toLowerCase(Locale.ROOT).endsWith(".ttf")).sorted().map(s -> {
+            String family = s.replace(".ttf", "").split("-")[0];
+            List<String> directory = assets.get(s).stream().distinct().collect(Collectors.toList());
+            return new HashMap<String, Object>() {{
+                put("family", family);
+                put("fonts", Lists.newArrayList(
+                    new HashMap<String, Object>() {{
+                        for (String value : directory) {
+                            put("asset", String.format("%s%s/%s", ASSETS_ROOT, value, s));
+                        }
+                    }}
+                ));
+            }};
+        }).collect(Collectors.toList());
         YamlHelper.updateYaml(yamlFile, map -> {
-            ((Map) map.get("flutter")).put("assets", paths);
+            Map flutter = ((Map) map.get("flutter"));
+            flutter.put("assets", paths);
+            flutter.put("fonts", fonts);
         });
     }
 
@@ -128,7 +145,7 @@ public class AssetAction extends AnAction {
         //处理iconfont图标
         Map<String, Map<String, String>> res = tables.rowMap();
         Map<String, String> icons = new HashMap<>();
-        Map<String,String> icon = res.remove("icon");
+        Map<String, String> icon = res.remove("icon");
         for (Map.Entry<String, String> entry : icon.entrySet()) {
             String json = FileUtils.readFileToString(new File(base.replace(ASSETS_ROOT, "") + entry.getValue()), Charset.defaultCharset());
             Map<String, Object> map = GsonUtil.fromJson(json, new TypeToken<>() {
