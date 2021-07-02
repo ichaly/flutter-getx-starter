@@ -18,6 +18,7 @@ import com.ruiyu.file.FileHelpers;
 import com.ruiyu.utils.ExtensionsKt;
 import io.flutter.pub.PubRoot;
 import org.jetbrains.annotations.NotNull;
+import org.jsoup.internal.StringUtil;
 
 import java.io.File;
 import java.util.Arrays;
@@ -80,7 +81,7 @@ public class AssetAction extends AnAction {
             }).collect(Collectors.toList())) {
                 getAssets(f);
             }
-        } else if (file.isFile()) {
+        } else if (file.isFile() && !StringUtil.isBlank(last)) {
             assets.put(file.getName(), last);
         }
     }
