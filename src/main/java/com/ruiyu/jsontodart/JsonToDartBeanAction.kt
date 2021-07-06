@@ -48,24 +48,7 @@ class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
         } ?: return
         try {
             JsonInputDialog(project) { collectInfo ->
-                //生成dart文件的内容
-                val classes = ModelGenerator(collectInfo, project).generateDartClasses()
-                //文件生成
-                val isInnerClass = ServiceManager.getService(Settings::class.java).isInnerClass == true
-                for (clazz in classes) {
-                    val classContent = if (isInnerClass) classes.joinToString("\n") else clazz.toString()
-                    val dependencies: List<Dependency> = if (isInnerClass) listOf() else clazz.dependencies
-                    if (!generateDartClassFile(clazz.name, classContent, project, directory, dependencies)) {
-//                        return@JsonInputDialog false
-                    }
-                    //如果是内部类则循环一次就够了
-                    if (isInnerClass) {
-                        break
-                    }
-                }
-                //生成helper辅助类
-                FlutterBeanFactoryAction.generateAllFile(project)
-                project.showNotify("Dart Data Class file generated successful")
+                doGenerate(collectInfo, project, directory)
                 true
             }.show()
         } catch (e: Exception) {
@@ -73,55 +56,82 @@ class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
         }
     }
 
-    private fun generateDartClassFileName(className: String): String {
-        //用户设置的后缀
-        val suffix = ServiceManager.getService(Settings::class.java).state.modelSuffix.toLowerCase()
-        return if (!className.contains("_")) {
-            (className + suffix.toUpperCaseFirstOne()).upperCharToUnderLine()
-        } else {
-            (className + "_" + suffix)
+    companion object {
+        fun doGenerate(
+            collectInfo: CollectInfo,
+            project: Project,
+            directory: PsiDirectory
+        ) {
+            //生成dart文件的内容
+            val classes = ModelGenerator(collectInfo, project).generateDartClasses()
+            //文件生成
+            val isInnerClass = ServiceManager.getService(Settings::class.java).isInnerClass == true
+            for (clazz in classes) {
+                val classContent = if (isInnerClass) classes.joinToString("\n") else clazz.toString()
+                val dependencies: List<Dependency> = if (isInnerClass) listOf() else clazz.dependencies
+                if (!generateDartClassFile(clazz.name, classContent, project, directory, dependencies)) {
+                    //                        return@JsonInputDialog false
+                }
+                //如果是内部类则循环一次就够了
+                if (isInnerClass) {
+                    break
+                }
+            }
+            //生成helper辅助类
+            FlutterBeanFactoryAction.generateAllFile(project)
+            project.showNotify("Dart Data Class file generated successful")
         }
-    }
 
-    private fun generateDartClassFile(
-        className: String,
-        classContent: String,
-        project: Project,
-        directory: PsiDirectory,
-        dependencies: List<Dependency> = listOf()
-    ): Boolean {
-        val fileName = generateDartClassFileName(className)
-        //文件是否存在的校验,如果包含那么就提示
-        if (FileHelpers.containsDirectoryFile(directory, "$fileName.dart")) {
-            project.showErrorMessage("The $fileName.dart already exists")
-            return false
+        private fun generateDartClassFileName(className: String): String {
+            //用户设置的后缀
+            val suffix = ServiceManager.getService(Settings::class.java).state.modelSuffix.toLowerCase()
+            return if (!className.contains("_")) {
+                (className + suffix.toUpperCaseFirstOne()).upperCharToUnderLine()
+            } else {
+                (className + "_" + suffix)
+            }
         }
-        if (FileHelpers.containsProjectFile(project, "$fileName.dart")) {
-            project.showErrorMessage("$fileName.dart already exists in other package")
-            return false
+
+        private fun generateDartClassFile(
+            className: String,
+            classContent: String,
+            project: Project,
+            directory: PsiDirectory,
+            dependencies: List<Dependency> = listOf()
+        ): Boolean {
+            val fileName = generateDartClassFileName(className)
+            //文件是否存在的校验,如果包含那么就提示
+            if (FileHelpers.containsDirectoryFile(directory, "$fileName.dart")) {
+                project.showErrorMessage("The $fileName.dart already exists")
+                return false
+            }
+            if (FileHelpers.containsProjectFile(project, "$fileName.dart")) {
+                project.showErrorMessage("$fileName.dart already exists in other package")
+                return false
+            }
+            val sb = StringBuilder()
+            val pubSpecConfig = YamlHelper.getPubSpecConfig(project)
+            //导包
+            sb.append("import 'package:${pubSpecConfig?.name}/gen/json/base/json_convert_content.dart';").append("\n")
+            //说明需要导包json_field.dart
+            if (classContent.contains("@JSONField(")) {
+                sb.append("import 'package:${pubSpecConfig?.name}/gen/json/base/json_field.dart';").append("\n")
+            }
+            //导入依赖包
+            for (dependency in dependencies) {
+                val packageName: String = directory.virtualFile.path.substringAfter("${project.name}/lib/")
+                sb.append("import 'package:${pubSpecConfig?.name}/$packageName/")
+                    .append(generateDartClassFileName(dependency.className)).append(".dart';").append("\n")
+            }
+            sb.append("\n").append(classContent)
+            //生成文件
+            project.executeCouldRollBackAction {
+                val file = PsiFileFactory.getInstance(project).createFileFromText(
+                    "$fileName.dart", DartFileType.INSTANCE, sb.toString()
+                ) as DartFile
+                directory.add(file)
+            }
+            return true
         }
-        val sb = StringBuilder()
-        val pubSpecConfig = YamlHelper.getPubSpecConfig(project)
-        //导包
-        sb.append("import 'package:${pubSpecConfig?.name}/gen/json/base/json_convert_content.dart';").append("\n")
-        //说明需要导包json_field.dart
-        if (classContent.contains("@JSONField(")) {
-            sb.append("import 'package:${pubSpecConfig?.name}/gen/json/base/json_field.dart';").append("\n")
-        }
-        //导入依赖包
-        for (dependency in dependencies) {
-            val packageName: String = directory.virtualFile.path.substringAfter("${project.name}/lib/")
-            sb.append("import 'package:${pubSpecConfig?.name}/$packageName/")
-                .append(generateDartClassFileName(dependency.className)).append(".dart';").append("\n")
-        }
-        sb.append("\n").append(classContent)
-        //生成文件
-        project.executeCouldRollBackAction {
-            val file = PsiFileFactory.getInstance(project).createFileFromText(
-                "$fileName.dart", DartFileType.INSTANCE, sb.toString()
-            ) as DartFile
-            directory.add(file)
-        }
-        return true
     }
 }

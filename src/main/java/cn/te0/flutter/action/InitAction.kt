@@ -8,13 +8,17 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
+import com.intellij.psi.impl.file.PsiDirectoryFactory
 import com.ruiyu.file.FileHelpers
+import com.ruiyu.jsontodart.CollectInfo
+import com.ruiyu.jsontodart.JsonToDartBeanAction
 import com.ruiyu.utils.showNotify
 import io.flutter.pub.PubRoot
 import java.io.File
 import java.net.URLDecoder
 import java.nio.charset.Charset
 import java.util.jar.JarFile
+
 
 class InitAction : AnAction() {
 
@@ -42,6 +46,7 @@ class InitAction : AnAction() {
                 //初始化资源文件目录
                 root.findChild("assets") ?: root.createChildDirectory(this, "assets").run {
                     findChild("image") ?: createChildDirectory(this, "image")//图片资源
+                    findChild("icon") ?: createChildDirectory(this, "icon")//字体图标
                     findChild("font") ?: createChildDirectory(this, "font")//字体资源
                     findChild("json") ?: createChildDirectory(this, "json")//Json资源
                     findChild("anim") ?: createChildDirectory(this, "anim")//动画资源
@@ -97,8 +102,17 @@ class InitAction : AnAction() {
                             )
                         }
                         //初始化目录结构
-                        findChild("entity") ?: createChildDirectory(this, "entity")
-                        findChild("views") ?: createChildDirectory(this, "views")
+                        findChild("widgets") ?: createChildDirectory(this, "widgets")
+                        findChild("entities") ?: createChildDirectory(this, "entities").apply {
+                            //生成一个实体类
+                            val c = CollectInfo().apply {
+                                userInputClassName = "User"
+                                userInputJson = "{}"
+                            }
+                            JsonToDartBeanAction.doGenerate(
+                                c, project, PsiDirectoryFactory.getInstance(project).createDirectory(this)
+                            )
+                        }
                         findChild("pages") ?: createChildDirectory(this, "pages").run {
                             //创建一个默认的Home页面
                             GetXConfig.isPage = true
@@ -107,6 +121,9 @@ class InitAction : AnAction() {
                         }
                     }
                     //初始化main.dart
+                    TemplateHelper.getInstance().generator(
+                        "main.dart.ftl", path + "/main.dart", HashMap()
+                    )
                 }
             }
             project.showNotify("Project is initialized successfully.")
