@@ -10,7 +10,8 @@ data class Settings(
     var modelSuffix: String,
     var isOpenNullSafety: Boolean?,
     var isOpenNullAble: Boolean?,
-    var isInnerClass: Boolean?
+    var isInnerClass: Boolean?,
+    var isAutoBackupPubspec: Boolean = true
 ) : PersistentStateComponent<Settings> {
 
     constructor() : this(

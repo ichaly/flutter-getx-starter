@@ -1,7 +1,10 @@
 package cn.te0.flutter.helper;
 
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.ruiyu.helper.PubSpecConfig;
+import com.ruiyu.setting.Settings;
+import lombok.val;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.yaml.snakeyaml.Yaml;
@@ -24,7 +27,10 @@ public class YamlHelper {
             FileWriter writer = new FileWriter(backup);
         ) {
             //备份原文件
-            IOUtils.copy(reader, writer);
+            boolean isAutoBackupPubspec = ServiceManager.getService(Settings.class).isAutoBackupPubspec();
+            if(isAutoBackupPubspec){
+                IOUtils.copy(reader, writer);
+            }
             //修改配置文件
             Yaml yaml = new Yaml();
             Map<String, Object> map = yaml.load(new FileInputStream(path));
