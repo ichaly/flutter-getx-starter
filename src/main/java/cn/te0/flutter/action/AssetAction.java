@@ -14,12 +14,12 @@ import com.google.gson.reflect.TypeToken;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectUtil;
-import com.ruiyu.file.FileHelpers;
 import com.ruiyu.utils.ExtensionsKt;
 import com.ruiyu.utils.GsonUtil;
-import io.flutter.pub.PubRoot;
+import io.flutter.utils.FlutterModuleUtils;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
@@ -53,13 +53,17 @@ public class AssetAction extends AnAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         project = e.getData(PlatformDataKeys.PROJECT);
-        base = Objects.requireNonNull(project).getBasePath() + File.separator + ASSETS_ROOT;
-        if (Objects.requireNonNull(PubRoot.forFile(FileHelpers.getProjectIdeaFile(project))).isFlutterPlugin()) {
-            name = YamlHelper.getName(project);
+        Module[] modules = FlutterModuleUtils.getModules(project);
+        for (Module module : modules) {
+            if (FlutterModuleUtils.isFlutterModule(module)) {
+                base = module.getModuleFile().getParent().getPath() + File.separator + ASSETS_ROOT;
+                name = module.getName();
+                getAssets(new File(base));
+                updateYaml(module);
+                updateDart(module);
+            }
         }
-        getAssets(new File(base));
-        updateYaml();
-        updateDart();
+
         Objects.requireNonNull(ProjectUtil.guessProjectDir(project)).refresh(false, true);
     }
 
@@ -93,9 +97,8 @@ public class AssetAction extends AnAction {
         }
     }
 
-    public void updateYaml() {
+    public void updateYaml(Module module) {
         List<String> paths = assets.values().stream().distinct().filter(item -> !variant.contains(item)).sorted().map(s -> "assets" + s + "/").collect(Collectors.toList());
-        String yamlFile = Objects.requireNonNull(PubRoot.forFile(FileHelpers.getProjectIdeaFile(project))).getPubspec().getPath();
         List<Map<String, Object>> fonts = assets.keys().stream().filter(item -> item.toLowerCase(Locale.ROOT).endsWith(".ttf")).sorted().map(s -> {
             String family = s.replace(".ttf", "").split("-")[0];
             List<String> directory = assets.get(s).stream().distinct().collect(Collectors.toList());
@@ -110,6 +113,7 @@ public class AssetAction extends AnAction {
                 ));
             }};
         }).collect(Collectors.toList());
+        String yamlFile = module.getModuleFile().getParent().getPath() + "/pubspec.yaml";
         YamlHelper.updateYaml(yamlFile, map -> {
             Map flutter = ((Map) map.get("flutter"));
             flutter.put("assets", paths);
@@ -118,7 +122,7 @@ public class AssetAction extends AnAction {
     }
 
     @SneakyThrows
-    public void updateDart() {
+    public void updateDart(Module module) {
         Table<String, String, String> tables = TreeBasedTable.create();
         Set<String> files = assets.keySet();
         for (String file : files) {
@@ -138,7 +142,7 @@ public class AssetAction extends AnAction {
                 }
             }
         }
-        File file = new File(Objects.requireNonNull(project).getBasePath() + "/lib/gen/res/");
+        File file = new File(module.getModuleFile().getParent().getPath() + "/lib/gen/res/");
         if (!file.exists()) {
             file.mkdirs();
         }
@@ -146,13 +150,15 @@ public class AssetAction extends AnAction {
         Map<String, Map<String, String>> res = tables.rowMap();
         Map<String, String> icons = new HashMap<>();
         Map<String, String> icon = res.remove("icon");
-        for (Map.Entry<String, String> entry : icon.entrySet()) {
-            String json = FileUtils.readFileToString(new File(base.replace(ASSETS_ROOT, "") + entry.getValue()), Charset.defaultCharset());
-            Map<String, Object> map = GsonUtil.fromJson(json, new TypeToken<>() {
-            });
-            List<Map<String, Object>> list = (List<Map<String, Object>>) map.get("glyphs");
-            for (Map<String, Object> m : list) {
-                icons.put(String.format("%s_%s", entry.getKey(), m.get("font_class")), String.format("0x%s", m.get("unicode")));
+        if (icon != null) {
+            for (Map.Entry<String, String> entry : icon.entrySet()) {
+                String json = FileUtils.readFileToString(new File(base.replace(ASSETS_ROOT, "") + entry.getValue()), Charset.defaultCharset());
+                Map<String, Object> map = GsonUtil.fromJson(json, new TypeToken<>() {
+                });
+                List<Map<String, Object>> list = (List<Map<String, Object>>) map.get("glyphs");
+                for (Map<String, Object> m : list) {
+                    icons.put(m.get("font_class").toString(), String.format("0x%s", m.get("unicode")));
+                }
             }
         }
         res = Maps.newHashMap(res);

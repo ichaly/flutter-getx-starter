@@ -27,6 +27,11 @@ dependencies {
 patchPluginXml {
     version = pluginVersion
     changeNotes = """
+      <b>1.0.16</b>
+      <ul>
+        <li>Assets generate support flutter module.</li>
+      </ul>
+      <br/>
       <b>1.0.15</b>
       <ul>
         <li>Add Iconfont support.</li>
