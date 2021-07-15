@@ -17,8 +17,10 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectUtil;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.ruiyu.utils.ExtensionsKt;
 import com.ruiyu.utils.GsonUtil;
+import io.flutter.pub.PubRoot;
 import io.flutter.utils.FlutterModuleUtils;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
@@ -56,8 +58,11 @@ public class AssetAction extends AnAction {
         Module[] modules = FlutterModuleUtils.getModules(project);
         for (Module module : modules) {
             if (FlutterModuleUtils.isFlutterModule(module)) {
-                base = module.getModuleFile().getParent().getPath() + File.separator + ASSETS_ROOT;
-                name = module.getName();
+                VirtualFile parent = module.getModuleFile().getParent();
+                base = parent.getPath() + File.separator + ASSETS_ROOT;
+                if (PubRoot.forFile(parent.findChild("lib")).isFlutterPlugin()) {
+                    name = YamlHelper.getName(project);
+                }
                 getAssets(new File(base));
                 updateYaml(module);
                 updateDart(module);
