@@ -162,7 +162,7 @@ public class AssetAction extends AnAction {
                 });
                 List<Map<String, Object>> list = (List<Map<String, Object>>) map.get("glyphs");
                 for (Map<String, Object> m : list) {
-                    icons.put(m.get("font_class").toString(), String.format("0x%s", m.get("unicode")));
+                    icons.put(m.get("font_class").toString().replaceAll("-","_"), String.format("0x%s", m.get("unicode")));
                 }
             }
         }
