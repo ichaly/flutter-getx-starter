@@ -27,6 +27,10 @@ dependencies {
 patchPluginXml {
     version = pluginVersion
     changeNotes = """
+      <b>1.0.18</b>
+      <ul>
+        <li>Fix iconfont name `-` bug.</li>
+      </ul>
       <b>1.0.17</b>
       <ul>
         <li>Resolve the bug of incorrect package name.</li>
