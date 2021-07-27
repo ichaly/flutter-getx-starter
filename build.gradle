@@ -27,6 +27,10 @@ dependencies {
 patchPluginXml {
     version = pluginVersion
     changeNotes = """
+      <b>1.0.19</b>
+      <ul>
+        <li>Compatible with 2021.2.</li>
+      </ul>
       <b>1.0.18</b>
       <ul>
         <li>Fix iconfont name `-` bug.</li>
